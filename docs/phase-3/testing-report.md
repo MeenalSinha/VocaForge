@@ -40,3 +40,4 @@
 ## 3. Database Integration (`test:db`)
 
 - Both `tests/integration/agents.real-db.test.ts` and `tests/integration/projects.real-db.test.ts` cleanly pass / skip when `DATABASE_URL` is omitted, and run with `fileParallelism: false` to ensure migration ordering without deadlock.
+

@@ -1,14 +1,13 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { PersonaCard } from "@/components/personas/persona-card";
 import { ScenarioCard } from "@/components/personas/scenario-card";
 import { TemplateLibrary } from "@/components/personas/template-library";
 import { PersonaPreviewModal } from "@/components/personas/persona-preview-modal";
 import VirtualCustomersPage from "@/app/(app)/virtual-customers/page";
 import { emptyPersonaConfig, emptyScenarioConfig, type PersonaRecord, type ScenarioRecord } from "@/server/personas/schema";
-import { PERSONA_TEMPLATES } from "@/server/personas/templates";
 
 const push = vi.fn();
 const refresh = vi.fn();
@@ -190,6 +189,8 @@ describe("PersonaPreviewModal", () => {
         persona={samplePersona}
         open={true}
         onOpenChange={vi.fn()}
+        onEdit={vi.fn()}
+        onCreateScenario={vi.fn()}
         scenarioCount={2}
       />,
     );

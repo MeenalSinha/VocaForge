@@ -88,3 +88,4 @@ CREATE TABLE persona_collection_items (
   PRIMARY KEY (collection_id, persona_id)
 );
 ```
+

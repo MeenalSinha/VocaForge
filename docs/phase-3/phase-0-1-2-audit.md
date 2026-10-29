@@ -36,3 +36,4 @@ Prior to beginning Phase 3 implementation, a comprehensive audit was executed ac
 3. **Shared Unit Test Configurations:**
    - *Problem:* `tests/integration/agents-suite.ts` directly imported `sampleConfig` from `tests/unit/agent-config.test.ts`, coupling unit and integration test compilation.
    - *Fix:* Extracted `sampleConfig` into `tests/sample-config.ts`.
+

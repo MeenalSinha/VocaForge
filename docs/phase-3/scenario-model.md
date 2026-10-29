@@ -59,3 +59,4 @@ The readiness engine (`evaluateScenarioReadiness`) performs proactive cross-chec
 1. **Capability Cross-Checking**: Compares `scenario.config.compatibility.requiredCapabilities` against `agent.config.capabilities`. Produces actionable warnings if the target agent has not declared a required capability or has it flagged as `unavailable` or `needs_information`.
 2. **Language Compatibility**: Validates whether the target agent declares support for `scenario.config.compatibility.language`.
 3. **Execution Limits**: Ensures turns (3-60) and timeouts (30-600s) remain realistic for real-time voice interactions.
+

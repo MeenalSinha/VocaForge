@@ -15,6 +15,7 @@ import {
 import { evaluatePersonaReadiness, evaluateScenarioReadiness } from "@/server/personas/readiness";
 import { PERSONA_TEMPLATES } from "@/server/personas/templates";
 import type { AgentConfig } from "@/server/agents/config-schema";
+import { sampleConfig } from "../sample-config";
 
 describe("Persona & Scenario Schemas", () => {
   describe("personaConfigSchema", () => {
@@ -58,7 +59,7 @@ describe("Persona & Scenario Schemas", () => {
 
     it("rejects invalid knowledge level", () => {
       const config = emptyPersonaConfig();
-      (config.knowledge as any).level = "genius";
+      (config.knowledge as unknown as Record<string, unknown>).level = "genius";
       const parsed = personaConfigSchema.safeParse(config);
       expect(parsed.success).toBe(false);
     });
@@ -178,14 +179,10 @@ describe("Persona & Scenario Schemas", () => {
       config.compatibility.language = "en";
 
       const mockAgentConfig: AgentConfig = {
-        identity: { name: "Agent Alpha", role: "Dispatcher", company: "HomeServices" },
-        behavior: { greeting: "Hello", tone: "helpful", style: "direct", instructions: "Help clients" },
-        knowledge: { sources: [], mustNotInvent: [] },
-        guardrails: { prohibitedActions: [], restrictedInformation: [], escalationConditions: [] },
+        ...sampleConfig(),
         language: { primary: "en", additional: ["es"] },
-        voice: {},
         capabilities: [
-          { name: "calendar_booking", status: "unavailable" },
+          { name: "calendar_booking", description: "", status: "unavailable", note: "" },
         ],
       };
 
@@ -204,12 +201,8 @@ describe("Persona & Scenario Schemas", () => {
       config.compatibility.language = "fr";
 
       const mockAgentConfig: AgentConfig = {
-        identity: { name: "Agent EN", role: "Support", company: "GlobalCorp" },
-        behavior: { greeting: "Hi", tone: "friendly", style: "polite", instructions: "Assist callers" },
-        knowledge: { sources: [], mustNotInvent: [] },
-        guardrails: { prohibitedActions: [], restrictedInformation: [], escalationConditions: [] },
+        ...sampleConfig(),
         language: { primary: "en", additional: ["es"] },
-        voice: {},
         capabilities: [],
       };
 

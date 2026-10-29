@@ -15,7 +15,6 @@ import {
   getPersonaStats,
   getScenario,
   listPersonas,
-  listScenarios,
   updatePersona,
   updateScenario,
 } from "@/server/personas/service";
@@ -188,7 +187,7 @@ describe("Personas & Scenarios Service Integration (pg-mem)", () => {
       // Read scenario
       const read = await getScenario(scenario.id, ctx());
       expect(read.scenario.name).toBe("Annual Contract Renewal");
-      expect(read.persona.name).toBe("Scenario Target Persona");
+      expect(read.persona?.name).toBe("Scenario Target Persona");
 
       // Update scenario
       const updated = await updateScenario(

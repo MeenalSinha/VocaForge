@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 import { GenerationError, type GenerationProvider } from "@/server/generation/provider";
 import { generatePersonaConfig } from "@/server/personas/generation";
 import { ValidationError } from "@/server/errors";
+import type { PersonaCategory } from "@/server/personas/schema";
 
-const mockDraft = (name: string, category: any = "customer_experience", extra: object = {}) => ({
+const mockDraft = (name: string, category: PersonaCategory = "customer_experience", extra: object = {}) => ({
   name,
   description: `Generated persona for ${name}`,
   category,

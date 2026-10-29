@@ -13,8 +13,8 @@ export interface PersonaPreviewModalProps {
   scenarioCount?: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onEdit: (persona: PersonaRecord) => void;
-  onCreateScenario: (persona: PersonaRecord) => void;
+  onEdit?: (persona: PersonaRecord) => void;
+  onCreateScenario?: (persona: PersonaRecord) => void;
 }
 
 export function PersonaPreviewModal({
@@ -258,25 +258,29 @@ export function PersonaPreviewModal({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-4">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              onOpenChange(false);
-              onEdit(persona);
-            }}
-          >
-            Edit Persona
-          </Button>
-          <div className="flex items-center gap-2">
+          {onEdit && (
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={() => {
                 onOpenChange(false);
-                onCreateScenario(persona);
+                onEdit(persona);
               }}
             >
-              New Scenario
+              Edit Persona
             </Button>
+          )}
+          <div className="flex items-center gap-2">
+            {onCreateScenario && (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  onOpenChange(false);
+                  onCreateScenario(persona);
+                }}
+              >
+                New Scenario
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
