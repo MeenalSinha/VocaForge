@@ -3,7 +3,7 @@ import { AnthropicProvider } from "@/server/generation/anthropic";
 import { GenerationError, type GenerationProvider } from "@/server/generation/provider";
 import { generateAgentConfig, proposeRefinement } from "@/server/generation/service";
 import { ValidationError } from "@/server/errors";
-import { sampleConfig } from "./agent-config.test";
+import { sampleConfig } from "../sample-config";
 
 const draftFor = (name: string, extra: object = {}) => {
   const c = sampleConfig();

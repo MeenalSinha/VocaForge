@@ -3,16 +3,9 @@ import { agentConfigSchema, draftToConfig, emptyConfig, generatedDraftSchema, re
 import { diffConfig, sameConfig, summarize } from "@/server/agents/diff";
 import { buildRemotePayload, composeSystemPrompt, localOnlyNotes } from "@/server/agents/prompt";
 import { getStarter, STARTERS } from "@/server/agents/starters";
+import { sampleConfig } from "../sample-config";
 
-export const sampleConfig = () => agentConfigSchema.parse({
-  identity: { name: "Desk", description: "", role: "A front desk assistant." },
-  behavior: { purpose: "Answer calls.", goals: ["Answer questions"], welcomeMessage: "Hello, how can I help?", instructions: "Be brief.", tone: "warm", responseStyle: "" },
-  knowledge: { sources: ["Owner supplied notes"], mustNotInvent: ["prices"] },
-  guardrails: { prohibitedActions: ["Give medical advice"], restrictedInformation: [], escalationConditions: ["Caller reports an emergency"], uncertaintyRules: "" },
-  language: { primary: "en", additional: ["hi"] },
-  voice: {},
-  capabilities: [{ name: "Book appointments", description: "", status: "unavailable", note: "" }],
-});
+export { sampleConfig };
 
 describe("agent configuration schema", () => {
   it("accepts a complete configuration and rejects an empty one with path-level errors", () => {

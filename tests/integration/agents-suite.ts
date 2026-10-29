@@ -8,7 +8,7 @@ import {
 import { createProject } from "@/server/projects/service";
 import { AppError, ConflictError, NotFoundError } from "@/server/errors";
 import { buildRemotePayload } from "@/server/agents/prompt";
-import { sampleConfig } from "../unit/agent-config.test";
+import { sampleConfig } from "../sample-config";
 
 const uniq = () => Math.random().toString(36).slice(2, 10);
 

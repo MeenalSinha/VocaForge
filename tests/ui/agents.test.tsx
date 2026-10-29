@@ -7,7 +7,7 @@ import { AgentDetail } from "@/components/agents/agent-detail";
 import { RefinePanel } from "@/components/agents/refine-panel";
 import { VoicePicker } from "@/components/agents/voice-picker";
 import { STARTERS } from "@/server/agents/starters";
-import { sampleConfig } from "../unit/agent-config.test";
+import { sampleConfig } from "../sample-config";
 
 const push = vi.fn();
 const refresh = vi.fn();
