@@ -12,3 +12,4 @@ Once a fix proposal has been applied, users trigger a targeted retest with one c
 
 ## Non-Destructive Preservation
 Original run transcripts, snapshots, and evaluator evaluations are never overwritten or mutated. The `retest_comparisons` table maintains foreign key references to both `original_run_id` and `retest_run_id`, guaranteeing full auditability.
+

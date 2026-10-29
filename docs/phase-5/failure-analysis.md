@@ -32,3 +32,4 @@ Every generated `FailureFindingRecord` includes an `evidenceReferences` array co
 - `excerpt`: Verbatim text quote from the transcript.
 - `timeInCallSecs`: Timestamp in the audio call when the quote occurred.
 - `note`: Contextual explanation of the citation.
+

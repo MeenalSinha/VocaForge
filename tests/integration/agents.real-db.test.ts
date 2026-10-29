@@ -10,7 +10,7 @@ let pool: Pool;
 describe.skipIf(!url)("agents against real PostgreSQL", () => {
   const dropTables = () =>
     pool.query(
-      "DROP TABLE IF EXISTS retest_comparisons, fix_proposals, failure_findings, remote_test_definitions, simulation_runs, simulation_batches, persona_collection_items, persona_collections, scenarios, personas, agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE",
+      "DROP TABLE IF EXISTS agent_deployments, retest_comparisons, fix_proposals, failure_findings, remote_test_definitions, simulation_runs, simulation_batches, persona_collection_items, persona_collections, scenarios, personas, agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE",
     );
 
   beforeAll(async () => {

@@ -9,3 +9,4 @@ export const POST = route(async (req: Request, { params }: { params: Promise<{ i
   const result = await applyFixProposal(id, { reconcileStale: body.reconcileStale });
   return ok(result);
 });
+

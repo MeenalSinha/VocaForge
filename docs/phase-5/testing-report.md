@@ -36,3 +36,4 @@
 - Verified `FixReviewModal` rendering diff viewer, expected improvement, and review actions.
 - Verified `RetestComparisonDrawer` rendering resolution verdict and metrics.
 - Verified `TranscriptDrawer` embedding `FailureFindingsCard` on failed executions.
+

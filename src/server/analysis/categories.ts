@@ -83,3 +83,4 @@ export const CATEGORY_DEFINITIONS: Record<FailureCategory, CategoryInfo> = {
     description: "The evaluation failed remotely, but the available transcript contains insufficient detail to isolate a specific behavioral fault.",
   },
 };
+

@@ -35,3 +35,4 @@ Phase 5 completes the core feedback loop of VocaForge by converting conversation
    - `src/components/analysis/fix-review-modal.tsx`: Visual diff review modal showing before vs proposed fields, expected improvements, potential risks, and stale version warnings.
    - `src/components/analysis/retest-comparison-drawer.tsx`: Side-by-side comparison drawer highlighting resolution verdict ("Failure Resolved" vs "Failure Persists").
    - Integrated into `src/components/simulations/transcript-drawer.tsx` and `src/app/(app)/test-lab/page.tsx`.
+

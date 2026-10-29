@@ -107,3 +107,4 @@ ALTER TABLE activity_events ADD CONSTRAINT activity_event_type_valid CHECK (
     'fix_proposal.created', 'fix_proposal.approved', 'fix_proposal.rejected', 'fix_proposal.applied', 'fix_proposal.retested'
   )
 );
+

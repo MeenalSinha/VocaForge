@@ -8,3 +8,4 @@ export const GET = route(async (_req: Request, { params }: { params: Promise<{ i
   const proposal = await getFixProposal(id);
   return ok(proposal);
 });
+

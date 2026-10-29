@@ -18,3 +18,4 @@ All lifecycle events are recorded in `activity_events`:
 
 ## Rollback Readiness
 Because each applied configuration change is preserved as a complete snapshot of `AgentConfig`, any version can be restored or rolled back to if a retest or regression test indicates degraded performance.
+

@@ -14,3 +14,4 @@ export const POST = route(async (req: Request, _ctx: { params: Promise<{ id: str
   const proposal = await createFixProposal(body.findingId);
   return ok(proposal, 201);
 });
+

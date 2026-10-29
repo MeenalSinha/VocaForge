@@ -20,3 +20,4 @@ If the agent is modified between the time the proposal is generated and when the
 - The engine halts execution with a `409 ConflictError`.
 - The user is notified that the agent has evolved to a newer version.
 - The UI exposes a reconciliation option (`reconcileStale: true`) to safely merge changes and increment the configuration version without corrupting intermediate updates.
+

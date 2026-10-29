@@ -9,3 +9,4 @@ export const POST = route(async (req: Request, { params }: { params: Promise<{ i
   const findings = await analyzeRun(id, { forceRegenerate: body.forceRegenerate });
   return ok(findings);
 });
+

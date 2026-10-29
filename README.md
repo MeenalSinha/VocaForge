@@ -2,9 +2,23 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
-VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 5 (Intelligence & Closed-Loop Refinement)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, AI fix proposals with visual diff review, and retest verification.
+VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 6 (Deployment, Observability & Reliability)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, AI fix proposals with visual diff review, retest verification, automated release readiness evaluation, production deployment workflows, telemetry & observability, and safe non-destructive rollback.
 
-## Implemented now (Phases 0 to 5)
+## Implemented now (Phases 0 to 6)
+
+- **Deployments & Release Management (`/deployments`)**:
+  - Target environment separation (`production`, `staging`, `development`).
+  - Active release banner displaying verified version, ElevenLabs remote agent ID, and live deployment status.
+  - Pre-release readiness evaluation engine evaluating configuration validity, provider synchronization, minimum test runs, $\ge 80\%$ pass rate threshold, zero unresolved critical findings, and external tool side-effect notices.
+  - Release promotion workflow that archives previous active deployments, records deployment metadata, and preserves immutable readiness snapshots.
+  - Safe, non-destructive rollback modal that restores earlier verified configurations as an immutable new version (`source: rollback`) with required operational incident notes, synchronized immediately to ElevenLabs.
+  - Historical deployments table with release lineage and detail inspection drawer.
+
+- **Results & Observability (`/results`)**:
+  - Real-time project-level KPI metric cards: Total Test Runs, Completed Evaluations, Evaluation Pass Rate (%), Unresolved Findings, Retest Resolution Rate (%), and Deployed Production Agents.
+  - Failure category distribution grid displaying exact counts across 12 canonical failure categories.
+  - Filterable execution history table by agent, evaluation verdict (`passed`, `failed_evaluation`, `infrastructure_error`, `inconclusive`), and scenario/persona text search.
+  - One-click inspection linking directly to the interactive `TranscriptDrawer` with complete turn-by-turn dialogue, timestamps, and findings evidence citations.
 
 - **Closed-Loop Refinement & Failure Analysis (`/test-lab`)**:
   - Automatically diagnose failed simulation test executions using deterministic rules and AI-assisted conversational analysis.
@@ -46,7 +60,6 @@ VocaForge is a platform for testing voice agents with virtual customers. This re
 - **Settings**: Database and migration status, ElevenLabs connection check.
 - **ElevenLabs service**: Auth check, create agent, create and run a simulation test, read and classify the result.
 - **Access-token gate, health endpoint, structured logging with redaction**.
-- **Three future sections** (Results, Refinement, Deployments) shown as planned.
 
 ## Stack
 

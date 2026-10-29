@@ -9,3 +9,4 @@ export const POST = route(async (req: Request, { params }: { params: Promise<{ i
   const proposal = await rejectFixProposal(id, body.reason);
   return ok(proposal);
 });
+

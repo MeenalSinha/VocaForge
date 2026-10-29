@@ -8,3 +8,4 @@ export const POST = route(async (_req: Request, { params }: { params: Promise<{ 
   const proposal = await approveFixProposal(id);
   return ok(proposal);
 });
+
