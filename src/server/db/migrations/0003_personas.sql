@@ -68,7 +68,7 @@ CREATE TABLE persona_collection_items (
   PRIMARY KEY (collection_id, persona_id)
 );
 
-ALTER TABLE activity_events DROP CONSTRAINT activity_event_type_valid;
+ALTER TABLE activity_events DROP CONSTRAINT IF EXISTS activity_event_type_valid;
 ALTER TABLE activity_events ADD CONSTRAINT activity_event_type_valid CHECK (
   event_type IN (
     'project.created', 'project.updated', 'project.archived', 'project.restored',

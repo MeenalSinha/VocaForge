@@ -8,13 +8,18 @@ const url = process.env.TEST_DATABASE_URL;
 let pool: Pool;
 
 describe.skipIf(!url)("agents against real PostgreSQL", () => {
+  const dropTables = () =>
+    pool.query(
+      "DROP TABLE IF EXISTS persona_collection_items, persona_collections, scenarios, personas, agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE",
+    );
+
   beforeAll(async () => {
     pool = new Pool({ connectionString: url });
-    await pool.query("DROP TABLE IF EXISTS agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE");
+    await dropTables();
     await runMigrations(pool);
   });
   afterAll(async () => {
-    await pool.query("DROP TABLE IF EXISTS agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE");
+    await dropTables();
     await pool.end();
   });
   agentServiceSuite(() => pool);
