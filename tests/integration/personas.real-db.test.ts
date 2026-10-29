@@ -10,7 +10,7 @@ let pool: Pool;
 describe.skipIf(!url)("personas against real PostgreSQL", () => {
   const dropTables = () =>
     pool.query(
-      "DROP TABLE IF EXISTS persona_collection_items, persona_collections, scenarios, personas, agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE",
+      "DROP TABLE IF EXISTS remote_test_definitions, simulation_runs, simulation_batches, persona_collection_items, persona_collections, scenarios, personas, agent_operations, agent_versions, agents, activity_events, projects, schema_migrations CASCADE",
     );
 
   beforeAll(async () => {
@@ -24,3 +24,4 @@ describe.skipIf(!url)("personas against real PostgreSQL", () => {
   });
   personaServiceSuite(() => pool);
 });
+

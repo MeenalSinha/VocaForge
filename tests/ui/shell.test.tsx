@@ -22,7 +22,8 @@ describe("application shell", () => {
 
   it("labels future sections with their phase", () => {
     render(<Sidebar />);
-    expect(screen.getByRole("link", { name: /Test Lab/ })).toHaveTextContent("Phase 4");
+    expect(screen.getByRole("link", { name: /Results/ })).toHaveTextContent("Phase 5");
+    expect(screen.getByRole("link", { name: /Test Lab/ })).not.toHaveTextContent("Phase");
     expect(screen.getByRole("link", { name: /Dashboard/ })).not.toHaveTextContent("Phase");
   });
 

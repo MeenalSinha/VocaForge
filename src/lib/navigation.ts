@@ -13,7 +13,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/virtual-customers", label: "Virtual Customers", icon: Users },
-  { href: "/test-lab", label: "Test Lab", icon: FlaskConical, plannedPhase: 4 },
+  { href: "/test-lab", label: "Test Lab", icon: FlaskConical },
   { href: "/results", label: "Results", icon: BarChart3, plannedPhase: 5 },
   { href: "/refinement", label: "Refinement", icon: Wrench, plannedPhase: 6 },
   { href: "/deployments", label: "Deployments", icon: Rocket, plannedPhase: 7 },

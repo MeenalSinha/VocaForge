@@ -4,7 +4,8 @@ export type ActivityType =
   | "project.created" | "project.updated" | "project.archived" | "project.restored"
   | "agent.created" | "agent.updated" | "agent.synced" | "agent.archived" | "agent.remote_deleted"
   | "persona.created" | "persona.updated" | "persona.duplicated" | "persona.archived"
-  | "scenario.created" | "scenario.updated" | "scenario.duplicated" | "scenario.archived";
+  | "scenario.created" | "scenario.updated" | "scenario.duplicated" | "scenario.archived"
+  | "simulation.started" | "simulation.completed" | "simulation.failed";
 
 export interface ActivityEvent {
   id: string;

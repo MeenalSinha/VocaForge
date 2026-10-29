@@ -2,9 +2,20 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
-VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 3 (Virtual Customer Studio)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, and structured test scenario generation.
+VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 4 (Simulation & Execution Engine)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, and interactive Test Lab.
 
-## Implemented now (Phases 0 to 3)
+## Implemented now (Phases 0 to 4)
+
+- **Test Lab & Simulation Engine (`/test-lab`)**:
+  - Run real-world simulation batches deploying configured customer personas against synchronized ElevenLabs voice agents.
+  - Multi-scenario batch selection, concurrency controls, and repeat execution parameters.
+  - Comprehensive preflight checks inspecting agent sync status, scenario/persona readiness, and tool safety notices.
+  - SHA-256 fingerprint caching in `remote_test_definitions` to avoid duplicate test creation on ElevenLabs.
+  - Live progress monitoring with auto-polling every 3 seconds.
+  - Interactive transcript drawer displaying complete conversation dialogue with speaker speech bubbles, timestamps, tool calls, and LLM judge evaluation rationales.
+  - Defensively separates criteria evaluation failures (`failed_evaluation`) from infrastructure errors (`infrastructure_error` / `timed_out`).
+  - Non-destructive scenario reruns preserving full historical execution evidence and immutable snapshots.
+  - Past execution history table with pass rates and quick batch inspection.
 
 - **Virtual Customer Studio (`/virtual-customers`)**:
   - Design realistic simulated caller personas with custom backgrounds, multi-dimensional personality traits (patience, assertiveness, familiarity), knowledge limits, and emotional response triggers.
@@ -24,7 +35,7 @@ VocaForge is a platform for testing voice agents with virtual customers. This re
 - **Settings**: Database and migration status, ElevenLabs connection check.
 - **ElevenLabs service**: Auth check, create agent, create and run a simulation test, read and classify the result.
 - **Access-token gate, health endpoint, structured logging with redaction**.
-- **Four future sections** (Test Lab, Results, Refinement, Deployments) shown as planned.
+- **Three future sections** (Results, Refinement, Deployments) shown as planned.
 
 ## Stack
 
