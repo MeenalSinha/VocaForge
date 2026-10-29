@@ -3,6 +3,11 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ResultsPage from "@/app/(app)/results/page";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+  usePathname: () => "/results",
+}));
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();

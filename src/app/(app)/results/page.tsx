@@ -21,7 +21,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import type { ObservabilityMetrics } from "@/server/observability/service";
 import type { SimulationRunRecord, RunStatus } from "@/server/simulations/schema";
 import type {
@@ -95,7 +94,6 @@ export default function ResultsPage() {
   const [runComparison, setRunComparison] = React.useState<RetestComparisonRecord | null>(null);
   const [_loadingRunDetails, setLoadingRunDetails] = React.useState<boolean>(false);
 
-  const router = useRouter();
   const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(false);
   const [isFixingId, setIsFixingId] = React.useState<string | null>(null);
 
@@ -251,7 +249,9 @@ export default function ResultsPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error?.message || "Failed to generate fix proposal.");
       toast.success("AI fix proposal generated. Redirecting to Refinement...");
-      router.push("/refinement");
+      if (typeof window !== "undefined") {
+        window.location.href = "/refinement";
+      }
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
@@ -635,9 +635,9 @@ export default function ResultsPage() {
                           variant="secondary"
                           size="sm"
                           onClick={() => handleInspectRun(item)}
-                          className="h-7 px-2 text-[11px]"
+                          className="h-7 px-2.5 text-[11px]"
                         >
-                          Transcript
+                          Inspect Transcript
                         </Button>
                       </div>
                     </td>
