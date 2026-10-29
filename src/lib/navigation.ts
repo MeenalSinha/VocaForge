@@ -12,7 +12,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/agents", label: "Agents", icon: Bot },
-  { href: "/virtual-customers", label: "Virtual Customers", icon: Users, plannedPhase: 3 },
+  { href: "/virtual-customers", label: "Virtual Customers", icon: Users },
   { href: "/test-lab", label: "Test Lab", icon: FlaskConical, plannedPhase: 4 },
   { href: "/results", label: "Results", icon: BarChart3, plannedPhase: 5 },
   { href: "/refinement", label: "Refinement", icon: Wrench, plannedPhase: 6 },

@@ -2,18 +2,29 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
-VocaForge is a platform for testing voice agents with virtual customers. This repository is the **foundation release (Phases 0 and 1)**: configuration, database, a reusable ElevenLabs integration layer, the application shell and design system, and database-backed project management.
+VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 3 (Virtual Customer Studio)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, and structured test scenario generation.
 
-## Implemented now (Phases 0 to 2)
+## Implemented now (Phases 0 to 3)
 
-- Agent builder: describe an assistant in plain language, generate a validated configuration with your configured model provider, edit it, choose a real ElevenLabs voice (with real text-to-speech preview), create a real ElevenLabs agent, reopen it from the library, talk to it live, refine it in plain language, and keep versioned history with explicit sent-to-ElevenLabs status
+- **Virtual Customer Studio (`/virtual-customers`)**:
+  - Design realistic simulated caller personas with custom backgrounds, multi-dimensional personality traits (patience, assertiveness, familiarity), knowledge limits, and emotional response triggers.
+  - Guided 6-step creation wizard with real-time configuration readiness analysis.
+  - AI-assisted persona generation from natural language descriptions using configured model provider.
+  - Curated catalogue of 10 starter customer archetypes across Customer Experience, Pricing & Policies, Communication, and Support.
+  - Test scenario builder with concrete missions, success criteria, failure conditions, execution bounds, and target agent compatibility checking.
+  - Persona and scenario duplication, soft-archiving, search, filtering, and aggregate statistics.
+  - Referential integrity protection preventing accidental deletion of personas with active scenarios.
 
-- Dashboard with real project counts, persisted activity and verified integration health
-- Projects: create, list, view, edit, archive, restore, search, status filter
-- Settings: database and migration status, ElevenLabs connection check
-- ElevenLabs service: auth check, create agent, create and run a simulation test, read and classify the result (scripts only, no UI yet)
-- Access-token gate, health endpoint, structured logging with redaction
-- Five future sections (Virtual Customers, Test Lab, Results, Refinement, Deployments) shown as planned, with no data
+- **Agent Builder & Lifecycle (`/agents`)**:
+  - Describe an assistant in plain language, generate a validated configuration with your configured model provider, edit it, choose a real ElevenLabs voice (with real text-to-speech preview), create a real ElevenLabs agent, reopen it from the library, talk to it live, refine it in plain language, and keep versioned history with explicit sent-to-ElevenLabs status.
+
+- **Dashboard & Projects**:
+  - Real project counts, aggregate persona statistics, persisted activity, and verified integration health.
+  - Projects: create, list, view, edit, archive, restore, search, status filter.
+- **Settings**: Database and migration status, ElevenLabs connection check.
+- **ElevenLabs service**: Auth check, create agent, create and run a simulation test, read and classify the result.
+- **Access-token gate, health endpoint, structured logging with redaction**.
+- **Four future sections** (Test Lab, Results, Refinement, Deployments) shown as planned.
 
 ## Stack
 
