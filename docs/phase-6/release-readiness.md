@@ -33,3 +33,4 @@ This snapshot records:
 - Timestamp of evaluation
 
 Auditors can review the exact evidence and criteria results that authorized any deployment at any point in history.
+

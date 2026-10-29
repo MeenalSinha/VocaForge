@@ -36,3 +36,4 @@ The deployment model is backed by PostgreSQL migration `0006_deployments_and_obs
 - Self-referencing foreign key `previous_deployment_id` tracks lineage across releases.
 - JSONB `readiness_snapshot` permanently preserves the evidence-based criteria score, blockers, and check results at the exact instant of release.
 - Unique constraints and index structures ensure high-speed lookups of active deployed agents per environment.
+

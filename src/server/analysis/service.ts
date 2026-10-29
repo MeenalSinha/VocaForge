@@ -424,3 +424,26 @@ export async function getComparisonForRun(
   const ownerId = ownerOf(ctx);
   return repo.findComparisonByRunId(pool, ownerId, runId);
 }
+
+/**
+ * Retrieves all failure findings, fix proposals, and retest comparisons for a project.
+ */
+export async function getRefinementDataForProject(
+  projectId: string,
+  ctx?: AnalysisContext,
+): Promise<{
+  findings: FailureFindingRecord[];
+  proposals: FixProposalRecord[];
+  comparisons: RetestComparisonRecord[];
+}> {
+  const pool = poolOf(ctx);
+  const ownerId = ownerOf(ctx);
+
+  const [findings, proposals, comparisons] = await Promise.all([
+    repo.findFindingsByProjectId(pool, ownerId, projectId),
+    repo.findFixProposalsByProjectId(pool, ownerId, projectId),
+    repo.findComparisonsByProjectId(pool, ownerId, projectId),
+  ]);
+
+  return { findings, proposals, comparisons };
+}

@@ -225,6 +225,24 @@ export async function findFindingsByAgentId(
   return res.rows.map(toFinding);
 }
 
+export async function findFindingsByProjectId(
+  db: Db,
+  ownerId: string | null,
+  projectId: string,
+): Promise<FailureFindingRecord[]> {
+  const params: unknown[] = [projectId];
+  let ownerClause = "owner_id IS NULL";
+  if (ownerId !== null) {
+    params.push(ownerId);
+    ownerClause = `owner_id = $${params.length}`;
+  }
+  const res = await db.query<FindingRow>(
+    `SELECT * FROM failure_findings WHERE project_id = $1 AND ${ownerClause} ORDER BY created_at DESC`,
+    params,
+  );
+  return res.rows.map(toFinding);
+}
+
 export async function findFindingById(
   db: Db,
   ownerId: string | null,
@@ -351,6 +369,24 @@ export async function findFixProposalsByRunId(
   return res.rows.map(toProposal);
 }
 
+export async function findFixProposalsByProjectId(
+  db: Db,
+  ownerId: string | null,
+  projectId: string,
+): Promise<FixProposalRecord[]> {
+  const params: unknown[] = [projectId];
+  let ownerClause = "owner_id IS NULL";
+  if (ownerId !== null) {
+    params.push(ownerId);
+    ownerClause = `owner_id = $${params.length}`;
+  }
+  const res = await db.query<ProposalRow>(
+    `SELECT * FROM fix_proposals WHERE project_id = $1 AND ${ownerClause} ORDER BY created_at DESC`,
+    params,
+  );
+  return res.rows.map(toProposal);
+}
+
 export async function updateFixProposalStatus(
   db: Db,
   ownerId: string | null,
@@ -468,4 +504,22 @@ export async function findComparisonByRunId(
     params,
   );
   return res.rows[0] ? toComparison(res.rows[0]) : null;
+}
+
+export async function findComparisonsByProjectId(
+  db: Db,
+  ownerId: string | null,
+  projectId: string,
+): Promise<RetestComparisonRecord[]> {
+  const params: unknown[] = [projectId];
+  let ownerClause = "owner_id IS NULL";
+  if (ownerId !== null) {
+    params.push(ownerId);
+    ownerClause = `owner_id = $${params.length}`;
+  }
+  const res = await db.query<ComparisonRow>(
+    `SELECT * FROM retest_comparisons WHERE project_id = $1 AND ${ownerClause} ORDER BY created_at DESC`,
+    params,
+  );
+  return res.rows.map(toComparison);
 }

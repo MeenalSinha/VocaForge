@@ -23,3 +23,4 @@ VocaForge follows an append-only, non-destructive rollback policy:
    - Pushes configuration to ElevenLabs via `ElevenLabsClient.updateAgent()`.
    - Records activity event `agent.rollback` and `deployment.rolled_back`.
    - Automatically archives any broken active deployments.
+

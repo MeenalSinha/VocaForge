@@ -42,3 +42,4 @@ ALTER TABLE activity_events ADD CONSTRAINT activity_event_type_valid CHECK (
     'deployment.created', 'deployment.completed', 'deployment.failed', 'deployment.rolled_back'
   )
 );
+

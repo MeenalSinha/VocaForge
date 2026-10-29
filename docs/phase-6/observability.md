@@ -42,3 +42,4 @@ The Results table enables operators to:
 - Filter executions by target agent, verdict status (`passed`, `failed_evaluation`, `infrastructure_error`, `inconclusive`), or scenario/persona search.
 - Review findings counts and retest resolution badges.
 - One-click click to open the **TranscriptDrawer**, displaying full turn-by-turn conversation transcripts, timestamps, speaker tags, and linked failure findings.
+

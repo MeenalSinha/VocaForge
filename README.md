@@ -2,9 +2,16 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
-VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 6 (Deployment, Observability & Reliability)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, AI fix proposals with visual diff review, retest verification, automated release readiness evaluation, production deployment workflows, telemetry & observability, and safe non-destructive rollback.
+VocaForge is a complete platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 7 (Final Integration, Polish & Hackathon Release)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, dedicated Refinement & Remediation Workspace, AI fix proposals with visual diff review, retest verification, automated release readiness evaluation, production deployment workflows, telemetry & observability, and safe non-destructive rollback.
 
-## Implemented now (Phases 0 to 6)
+## Implemented now (Phases 0 to 7)
+
+- **Dedicated Refinement & Remediation Workspace (`/refinement`)**:
+  - Centralized remediation hub across projects and target voice agents.
+  - KPI summary banner: Active Findings, Pending Proposals, Applied Fixes, and Verified Retests.
+  - Tri-tab navigation for **Failure Findings**, **Fix Proposals**, and **Retest Verifications**.
+  - Side-by-side prompt diff viewer with one-click approval, local application, and remote synchronization to ElevenLabs.
+  - Retest comparison drawer proving failure resolution between base and updated agent versions.
 
 - **Deployments & Release Management (`/deployments`)**:
   - Target environment separation (`production`, `staging`, `development`).
@@ -20,7 +27,7 @@ VocaForge is a platform for testing voice agents with virtual customers. This re
   - Filterable execution history table by agent, evaluation verdict (`passed`, `failed_evaluation`, `infrastructure_error`, `inconclusive`), and scenario/persona text search.
   - One-click inspection linking directly to the interactive `TranscriptDrawer` with complete turn-by-turn dialogue, timestamps, and findings evidence citations.
 
-- **Closed-Loop Refinement & Failure Analysis (`/test-lab`)**:
+- **Closed-Loop Refinement & Failure Analysis (`/test-lab` & `/refinement`)**:
   - Automatically diagnose failed simulation test executions using deterministic rules and AI-assisted conversational analysis.
   - 12 standardized failure categories (`unsupported_answer`, `objective_failed`, `unnecessary_repetition`, `missing_information`, `policy_violation`, `incorrect_tool_usage`, `tool_execution_failed`, `language_barrier`, `premature_end`, `excessive_turns`, `contradictory_response`, `insufficient_evidence`).
   - Empirical evidence citations linked directly to message turns in persistent transcripts.
@@ -60,6 +67,15 @@ VocaForge is a platform for testing voice agents with virtual customers. This re
 - **Settings**: Database and migration status, ElevenLabs connection check.
 - **ElevenLabs service**: Auth check, create agent, create and run a simulation test, read and classify the result.
 - **Access-token gate, health endpoint, structured logging with redaction**.
+
+## Hackathon Release Assets
+
+All Phase 7 submission materials are available in `docs/phase-7/`:
+- `docs/phase-7/demo-script.md` — Complete 5-minute live demonstration narrative script.
+- `docs/phase-7/demo-video-plan.md` — Timed 2–3 minute video presentation storyboard.
+- `docs/phase-7/pitch-deck-outline.md` — 8-slide pitch deck structure.
+- `docs/phase-7/final-demo-checklist.md` — Operational quality gate checklist.
+- `docs/phase-7/implementation-report.md` — Detailed engineering implementation report.
 
 ## Stack
 

@@ -53,3 +53,4 @@ $$\text{Design} \rightarrow \text{Virtual Customer Test} \rightarrow \text{Failu
 - **No hardcoded metrics**: All KPI calculations, pass rates, and category counts are derived from genuine simulation runs in PostgreSQL.
 - **Non-destructive operations**: Rollbacks append new version records; historical snapshots are never truncated or lost.
 - **Environment isolation**: Config versions, provider sync state, and release deployment statuses are modeled as independent concerns.
+

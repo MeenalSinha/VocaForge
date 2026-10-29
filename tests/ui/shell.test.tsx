@@ -20,12 +20,11 @@ describe("application shell", () => {
     expect(screen.getByRole("link", { name: /Dashboard/ })).not.toHaveAttribute("aria-current");
   });
 
-  it("labels future sections with their phase", () => {
+  it("renders all implemented primary navigation sections without roadmap badges", () => {
     render(<Sidebar />);
-    expect(screen.getByRole("link", { name: /Refinement/ })).toHaveTextContent("Phase 6");
-    expect(screen.getByRole("link", { name: /Results/ })).not.toHaveTextContent("Phase");
-    expect(screen.getByRole("link", { name: /Test Lab/ })).not.toHaveTextContent("Phase");
-    expect(screen.getByRole("link", { name: /Dashboard/ })).not.toHaveTextContent("Phase");
+    for (const item of NAV_ITEMS) {
+      expect(screen.getByRole("link", { name: new RegExp(item.label) })).not.toHaveTextContent("Phase");
+    }
   });
 
   it("renders content, skip link and an accessible mobile menu that opens and closes with Escape", async () => {

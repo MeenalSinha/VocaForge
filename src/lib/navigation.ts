@@ -15,7 +15,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/virtual-customers", label: "Virtual Customers", icon: Users },
   { href: "/test-lab", label: "Test Lab", icon: FlaskConical },
   { href: "/results", label: "Results", icon: BarChart3 },
-  { href: "/refinement", label: "Refinement", icon: Wrench, plannedPhase: 6 },
+  { href: "/refinement", label: "Refinement", icon: Wrench },
   { href: "/deployments", label: "Deployments", icon: Rocket },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
