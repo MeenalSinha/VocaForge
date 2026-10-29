@@ -189,7 +189,7 @@ export async function getAgentDetail(id: string, context?: AgentContext): Promis
 const saveInput = z.object({
   config: agentConfigSchema,
   baseVersion: z.number().int().min(1),
-  source: z.enum(["manual_edit", "refinement"]).default("manual_edit"),
+  source: z.enum(["manual_edit", "refinement", "fix_proposal", "rollback"]).default("manual_edit"),
   summary: z.string().trim().max(300).optional(),
 });
 

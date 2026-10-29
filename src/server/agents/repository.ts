@@ -11,7 +11,7 @@ export interface Agent {
   createdAt: string; updatedAt: string;
 }
 export interface AgentVersion {
-  id: string; version: number; config: AgentConfig; summary: string; source: "created" | "manual_edit" | "refinement";
+  id: string; version: number; config: AgentConfig; summary: string; source: "created" | "manual_edit" | "refinement" | "fix_proposal" | "rollback";
   syncStatus: "not_synced" | "synced" | "failed"; syncedAt: string | null; syncError: string | null; createdAt: string;
 }
 export interface AgentOperation {

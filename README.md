@@ -2,9 +2,20 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
-VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 4 (Simulation & Execution Engine)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, and interactive Test Lab.
+VocaForge is a platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 5 (Intelligence & Closed-Loop Refinement)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, AI fix proposals with visual diff review, and retest verification.
 
-## Implemented now (Phases 0 to 4)
+## Implemented now (Phases 0 to 5)
+
+- **Closed-Loop Refinement & Failure Analysis (`/test-lab`)**:
+  - Automatically diagnose failed simulation test executions using deterministic rules and AI-assisted conversational analysis.
+  - 12 standardized failure categories (`unsupported_answer`, `objective_failed`, `unnecessary_repetition`, `missing_information`, `policy_violation`, `incorrect_tool_usage`, `tool_execution_failed`, `language_barrier`, `premature_end`, `excessive_turns`, `contradictory_response`, `insufficient_evidence`).
+  - Empirical evidence citations linked directly to message turns in persistent transcripts.
+  - Failure Findings Card with collapsible transcript evidence and "Fix with AI" remediation trigger.
+  - AI Remediation Fix Generator creating targeted minimal configuration diffs validated against `agentConfigSchema`.
+  - Fix Review Modal with side-by-side visual diff viewer, rationale, expected improvement, and potential risks.
+  - Approval and rejection review workflows with optimistic concurrency control and stale base version reconciliation.
+  - Instant deployment to ElevenLabs agents with tracked `applied_locally`, `synced_remotely`, or `sync_failed` states.
+  - Targeted retest execution with before-and-after Retest Comparison Drawer displaying resolution verdict ("Failure Resolved" vs "Failure Persists").
 
 - **Test Lab & Simulation Engine (`/test-lab`)**:
   - Run real-world simulation batches deploying configured customer personas against synchronized ElevenLabs voice agents.

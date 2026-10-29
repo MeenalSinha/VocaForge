@@ -3,15 +3,36 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Bot, CheckCircle2, RotateCw, User, XCircle } from "lucide-react";
+import {
+  Bot,
+  CheckCircle2,
+  GitCompare,
+  RotateCw,
+  Sparkles,
+  User,
+  XCircle,
+} from "lucide-react";
 import type { SimulationRunRecord } from "@/server/simulations/schema";
+import type {
+  FailureFindingRecord,
+  RetestComparisonRecord,
+} from "@/server/analysis/schema";
 import { RunStatusBadge } from "./batch-status-badge";
+import { FailureFindingsCard } from "../analysis/failure-findings-card";
 
 export interface TranscriptDrawerProps {
   run: SimulationRunRecord | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onRerun?: (run: SimulationRunRecord) => void;
+  // Phase 5 Closed-Loop Refinement props
+  findings?: FailureFindingRecord[];
+  isAnalyzing?: boolean;
+  onAnalyze?: (run: SimulationRunRecord) => void;
+  onFixWithAI?: (finding: FailureFindingRecord) => void;
+  isFixingId?: string | null;
+  comparison?: RetestComparisonRecord | null;
+  onViewComparison?: (comparison: RetestComparisonRecord) => void;
 }
 
 export function TranscriptDrawer({
@@ -19,8 +40,20 @@ export function TranscriptDrawer({
   open,
   onOpenChange,
   onRerun,
+  findings = [],
+  isAnalyzing = false,
+  onAnalyze,
+  onFixWithAI,
+  isFixingId = null,
+  comparison = null,
+  onViewComparison,
 }: TranscriptDrawerProps) {
   if (!run) return null;
+
+  const isFailedOrInconclusive =
+    run.status === "failed_evaluation" ||
+    run.status === "inconclusive" ||
+    run.status === "infrastructure_error";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,6 +89,31 @@ export function TranscriptDrawer({
             </div>
           </div>
 
+          {/* Retest Comparison Banner if available */}
+          {comparison && (
+            <div className="flex items-center justify-between rounded-md border border-accent/30 bg-accent/10 p-3">
+              <div className="flex items-center gap-2">
+                <GitCompare className="h-4 w-4 text-accent" />
+                <span className="font-semibold text-foreground">
+                  Retest Comparison Available:
+                </span>
+                <span className="text-muted">
+                  {comparison.failureResolved ? "Failure Resolved" : "Failure Persists"} (Tested v{comparison.testedAgentVersion})
+                </span>
+              </div>
+              {onViewComparison && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="text-xs"
+                  onClick={() => onViewComparison(comparison)}
+                >
+                  View Retest Comparison
+                </Button>
+              )}
+            </div>
+          )}
+
           {/* Evaluation Rationale / Error Details */}
           {run.evaluationRationale && (
             <div
@@ -85,6 +143,41 @@ export function TranscriptDrawer({
             <div className="rounded-md border border-danger/30 bg-danger-soft p-3 text-danger">
               <p className="font-semibold">Error Message:</p>
               <p className="mt-0.5 whitespace-pre-wrap text-muted">{run.errorMessage}</p>
+            </div>
+          )}
+
+          {/* Phase 5 Failure Findings & AI Remediation Section */}
+          {isFailedOrInconclusive && (
+            <div className="space-y-2 border-t pt-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-muted uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-accent" />
+                  AI Failure Analysis & Remediation
+                </h4>
+                {findings.length === 0 && onAnalyze && (
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    disabled={isAnalyzing}
+                    onClick={() => onAnalyze(run)}
+                  >
+                    <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                    {isAnalyzing ? "Analyzing Failure..." : "Analyze Failure"}
+                  </Button>
+                )}
+              </div>
+
+              {findings.length > 0 ? (
+                <FailureFindingsCard
+                  findings={findings}
+                  onFixWithAI={onFixWithAI}
+                  isFixingId={isFixingId}
+                />
+              ) : !onAnalyze ? null : (
+                <div className="rounded-md border border-dashed p-4 text-center text-muted">
+                  Click <strong>Analyze Failure</strong> to run deterministic diagnostics and AI evaluation to isolate root cause and generate a fix proposal.
+                </div>
+              )}
             </div>
           )}
 

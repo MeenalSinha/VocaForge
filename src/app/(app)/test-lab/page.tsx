@@ -29,6 +29,13 @@ import { PreflightCard } from "@/components/simulations/preflight-card";
 import { RunCard } from "@/components/simulations/run-card";
 import { TranscriptDrawer } from "@/components/simulations/transcript-drawer";
 import { BatchHistoryTable } from "@/components/simulations/batch-history-table";
+import type {
+  FailureFindingRecord,
+  FixProposalRecord,
+  RetestComparisonRecord,
+} from "@/server/analysis/schema";
+import { FixReviewModal } from "@/components/analysis/fix-review-modal";
+import { RetestComparisonDrawer } from "@/components/analysis/retest-comparison-drawer";
 import { toast } from "sonner";
 
 interface ProjectOption {
@@ -80,7 +87,53 @@ export default function TestLabPage() {
   const [inspectRun, setInspectRun] = React.useState<SimulationRunRecord | null>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
+  // Phase 5: Closed-Loop Refinement states
+  const [findings, setFindings] = React.useState<FailureFindingRecord[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = React.useState(false);
+  const [isFixingId, setIsFixingId] = React.useState<string | null>(null);
+  const [activeProposal, setActiveProposal] = React.useState<FixProposalRecord | null>(null);
+  const [fixModalOpen, setFixModalOpen] = React.useState(false);
+  const [activeComparison, setActiveComparison] = React.useState<RetestComparisonRecord | null>(null);
+  const [comparisonDrawerOpen, setComparisonDrawerOpen] = React.useState(false);
+  const [isApproving, setIsApproving] = React.useState(false);
+  const [isRejecting, setIsRejecting] = React.useState(false);
+  const [isApplying, setIsApplying] = React.useState(false);
+  const [isRetesting, setIsRetesting] = React.useState(false);
+
   const [error, setError] = React.useState<string | null>(null);
+
+  // Load Phase 5 analysis findings and comparison when inspectRun changes
+  React.useEffect(() => {
+    if (!inspectRun) {
+      setFindings([]);
+      setActiveComparison(null);
+      return;
+    }
+    const runId = inspectRun.id;
+    async function loadAnalysisData() {
+      try {
+        const [findingsRes, compRes] = await Promise.all([
+          fetch(`/api/simulations/runs/${runId}/findings`),
+          fetch(`/api/simulations/runs/${runId}/comparison`),
+        ]);
+        if (findingsRes.ok) {
+          const fJson = await findingsRes.json();
+          setFindings(fJson.data?.findings || []);
+        } else {
+          setFindings([]);
+        }
+        if (compRes.ok) {
+          const cJson = await compRes.json();
+          setActiveComparison(cJson.data?.comparison || null);
+        } else {
+          setActiveComparison(null);
+        }
+      } catch {
+        // non-blocking
+      }
+    }
+    loadAnalysisData();
+  }, [inspectRun]);
 
   // 1. Load Projects on Mount
   React.useEffect(() => {
@@ -317,6 +370,120 @@ export default function TestLabPage() {
       setActiveTab("setup");
     } catch (err: unknown) {
       toast.error((err as Error).message);
+    }
+  };
+
+  // Phase 5 Action Handlers
+  const handleAnalyzeFailure = async (run: SimulationRunRecord) => {
+    try {
+      setIsAnalyzing(true);
+      const res = await fetch(`/api/simulations/runs/${run.id}/analyze`, { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to analyze failure.");
+      toast.success("Failure analyzed successfully.");
+      const fRes = await fetch(`/api/simulations/runs/${run.id}/findings`);
+      if (fRes.ok) {
+        const fJson = await fRes.json();
+        setFindings(fJson.data?.findings || []);
+      }
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleFixWithAI = async (finding: FailureFindingRecord) => {
+    if (!inspectRun) return;
+    try {
+      setIsFixingId(finding.id);
+      const res = await fetch(`/api/simulations/runs/${inspectRun.id}/fix-proposal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ findingId: finding.id }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to generate fix proposal.");
+      setActiveProposal(json.data.proposal);
+      setFixModalOpen(true);
+      toast.success("AI fix proposal generated.");
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsFixingId(null);
+    }
+  };
+
+  const handleApproveProposal = async (proposalId: string) => {
+    try {
+      setIsApproving(true);
+      const res = await fetch(`/api/simulations/proposals/${proposalId}/approve`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to approve proposal.");
+      setActiveProposal(json.data.proposal);
+      toast.success("Fix proposal approved.");
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+  const handleRejectProposal = async (proposalId: string) => {
+    try {
+      setIsRejecting(true);
+      const res = await fetch(`/api/simulations/proposals/${proposalId}/reject`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to reject proposal.");
+      setActiveProposal(json.data.proposal);
+      toast.info("Fix proposal rejected.");
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
+  const handleApplyProposal = async (proposalId: string, reconcileStale?: boolean) => {
+    try {
+      setIsApplying(true);
+      const res = await fetch(`/api/simulations/proposals/${proposalId}/apply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reconcileStale: Boolean(reconcileStale) }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to apply fix proposal.");
+      setActiveProposal(json.data.proposal);
+      toast.success("Fix applied and configuration updated.");
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  const handleRetestProposal = async (proposalId: string) => {
+    try {
+      setIsRetesting(true);
+      const res = await fetch(`/api/simulations/proposals/${proposalId}/retest`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to retest proposal.");
+      setFixModalOpen(false);
+      setDrawerOpen(false);
+      setActiveBatch(json.data.batch);
+      setActiveRuns(json.data.runs);
+      toast.success("Retest simulation launched.");
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsRetesting(false);
     }
   };
 
@@ -759,6 +926,52 @@ export default function TestLabPage() {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         onRerun={handleRerunRun}
+        findings={findings}
+        isAnalyzing={isAnalyzing}
+        onAnalyze={handleAnalyzeFailure}
+        onFixWithAI={handleFixWithAI}
+        isFixingId={isFixingId}
+        comparison={activeComparison}
+        onViewComparison={(comp) => {
+          setActiveComparison(comp);
+          setComparisonDrawerOpen(true);
+        }}
+      />
+
+      {/* Fix Review Modal */}
+      <FixReviewModal
+        proposal={activeProposal}
+        open={fixModalOpen}
+        onOpenChange={setFixModalOpen}
+        onApprove={handleApproveProposal}
+        onReject={handleRejectProposal}
+        onApply={handleApplyProposal}
+        onRetest={handleRetestProposal}
+        isApproving={isApproving}
+        isRejecting={isRejecting}
+        isApplying={isApplying}
+        isRetesting={isRetesting}
+      />
+
+      {/* Retest Comparison Drawer */}
+      <RetestComparisonDrawer
+        comparison={activeComparison}
+        open={comparisonDrawerOpen}
+        onOpenChange={setComparisonDrawerOpen}
+        onViewOriginalRun={(runId) => {
+          const r = activeRuns.find((x) => x.id === runId);
+          if (r) {
+            setInspectRun(r);
+            setDrawerOpen(true);
+          }
+        }}
+        onViewRetestRun={(runId) => {
+          const r = activeRuns.find((x) => x.id === runId);
+          if (r) {
+            setInspectRun(r);
+            setDrawerOpen(true);
+          }
+        }}
       />
     </div>
   );
