@@ -46,3 +46,4 @@ export const POST = route(async (req: Request) => {
   const result = await setupDemoWorkspace({ executeSimulation });
   return ok(result, 201);
 });
+

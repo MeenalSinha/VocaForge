@@ -567,13 +567,13 @@ export default function TestLabPage() {
         </div>
 
         {/* View Tabs */}
-        <div className="flex items-center gap-1 rounded-md bg-muted p-1 text-xs">
+        <div className="flex items-center gap-1 rounded-md bg-subtle p-1 text-xs border border-border/60">
           <button
             type="button"
             onClick={() => setActiveTab("setup")}
-            className={`flex items-center gap-1.5 rounded px-3 py-1 font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-all ${
               activeTab === "setup"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-surface text-accent shadow-xs font-semibold"
                 : "text-muted hover:text-foreground"
             }`}
           >
@@ -583,9 +583,9 @@ export default function TestLabPage() {
           <button
             type="button"
             onClick={() => setActiveTab("history")}
-            className={`flex items-center gap-1.5 rounded px-3 py-1 font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-all ${
               activeTab === "history"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-surface text-accent shadow-xs font-semibold"
                 : "text-muted hover:text-foreground"
             }`}
           >
