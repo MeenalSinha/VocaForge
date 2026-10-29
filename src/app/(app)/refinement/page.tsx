@@ -76,7 +76,7 @@ export default function RefinementPage() {
         const json = await res.json();
         if (!res.ok) throw new Error(json.error?.message || "Failed to load projects.");
 
-        const list: ProjectOption[] = json.data || [];
+        const list: ProjectOption[] = json.data?.items || (Array.isArray(json.data) ? json.data : []);
         setProjects(list);
         if (list[0]) {
           setSelectedProjectId(list[0].id);
