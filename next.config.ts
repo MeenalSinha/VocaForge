@@ -10,6 +10,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  devIndicators: false,
   // `pg` uses Node APIs and must stay out of the bundle.
   serverExternalPackages: ["pg"],
   async headers() {

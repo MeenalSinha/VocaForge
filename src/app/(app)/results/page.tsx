@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/feedback";
 import {
   AlertTriangle,
+  ArrowRight,
   BarChart3,
   CheckCircle2,
   Clock,
@@ -17,7 +18,10 @@ import {
   Loader2,
   RefreshCw,
   Search,
+  Sparkles,
 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import type { ObservabilityMetrics } from "@/server/observability/service";
 import type { SimulationRunRecord, RunStatus } from "@/server/simulations/schema";
 import type {
@@ -90,6 +94,10 @@ export default function ResultsPage() {
   const [runFindings, setRunFindings] = React.useState<FailureFindingRecord[]>([]);
   const [runComparison, setRunComparison] = React.useState<RetestComparisonRecord | null>(null);
   const [_loadingRunDetails, setLoadingRunDetails] = React.useState<boolean>(false);
+
+  const router = useRouter();
+  const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(false);
+  const [isFixingId, setIsFixingId] = React.useState<string | null>(null);
 
   // 1. Load initial projects
   React.useEffect(() => {
@@ -194,6 +202,60 @@ export default function ResultsPage() {
       setRunComparison(null);
     } finally {
       setLoadingRunDetails(false);
+    }
+  }
+
+  async function handleAnalyzeRun(run: SimulationRunRecord) {
+    try {
+      setIsAnalyzing(true);
+      const res = await fetch(`/api/simulations/runs/${run.id}/analyze`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to analyze failure.");
+      setRunFindings(json.data || []);
+      toast.success("AI failure analysis completed.");
+      await refreshData();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
+
+  async function handleAnalyzeRunDirect(runId: string) {
+    try {
+      setIsAnalyzing(true);
+      const res = await fetch(`/api/simulations/runs/${runId}/analyze`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to analyze failure.");
+      toast.success("Failure analyzed. Findings recorded.");
+      await refreshData();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
+
+  async function handleFixWithAI(finding: FailureFindingRecord) {
+    try {
+      setIsFixingId(finding.id);
+      const res = await fetch(`/api/simulations/runs/${finding.runId}/fix-proposal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ findingId: finding.id }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Failed to generate fix proposal.");
+      toast.success("AI fix proposal generated. Redirecting to Refinement...");
+      router.push("/refinement");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsFixingId(null);
     }
   }
 
@@ -547,14 +609,37 @@ export default function ResultsPage() {
                     </td>
 
                     <td className="py-2.5 text-right">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleInspectRun(item)}
-                        className="h-7 px-2.5 text-[11px]"
-                      >
-                        Inspect Transcript
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {item.status === "failed_evaluation" && item.findingsCount === 0 && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            disabled={isAnalyzing}
+                            onClick={() => handleAnalyzeRunDirect(item.id)}
+                            className="h-7 px-2 text-[11px] gap-1"
+                          >
+                            <Sparkles className="h-3 w-3" />
+                            Analyze
+                          </Button>
+                        )}
+                        {item.findingsCount > 0 && (
+                          <Link
+                            href="/refinement"
+                            className="inline-flex items-center rounded-md border border-accent/30 bg-accent-soft px-2 py-1 text-[11px] font-medium text-accent hover:bg-accent/15 transition-colors gap-1"
+                          >
+                            <span>Refine</span>
+                            <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        )}
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleInspectRun(item)}
+                          className="h-7 px-2 text-[11px]"
+                        >
+                          Transcript
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -571,6 +656,10 @@ export default function ResultsPage() {
         onOpenChange={setDrawerOpen}
         findings={runFindings}
         comparison={runComparison}
+        isAnalyzing={isAnalyzing}
+        onAnalyze={handleAnalyzeRun}
+        onFixWithAI={handleFixWithAI}
+        isFixingId={isFixingId}
       />
     </div>
   );
