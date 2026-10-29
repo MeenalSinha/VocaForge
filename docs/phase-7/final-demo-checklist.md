@@ -59,3 +59,4 @@ This checklist confirms that VocaForge is completely stabilized, tested, verifie
 - [x] **Tenant Scoping**: All database operations are filtered by owner and project ID.
 - [x] **Graceful Error Recovery**: Network timeouts and provider outages degrade gracefully to informative UI states without unhandled crashes.
 - [x] **Database Portability**: Cleanly passes tests on both real PostgreSQL and in-memory `pg-mem` mock database.
+

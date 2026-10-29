@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: vocaforge
       POSTGRES_PASSWORD: vocaforge
       POSTGRES_DB: vocaforge
-    ports: ["5432:5432"]
+    ports: ["5434:5432"]
     volumes: ["vocaforge-pg:/var/lib/postgresql/data"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vocaforge"]

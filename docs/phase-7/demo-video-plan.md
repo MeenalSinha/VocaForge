@@ -27,3 +27,4 @@
 2. **Data Cleanliness**: Use the pre-seeded project "Voice Operations Lab" with active ElevenLabs mock or live credentials.
 3. **Cursor Tracking**: Enable mouse click ripple highlights to make navigation intuitive.
 4. **Transition Pacing**: Fast snap transitions between tabs (`0.2s` crossfade) to maintain brisk, hackathon-friendly cadence.
+

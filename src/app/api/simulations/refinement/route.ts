@@ -15,3 +15,4 @@ export const GET = route(async (req: Request) => {
   const data = await getRefinementDataForProject(projectId);
   return ok(data);
 });
+
