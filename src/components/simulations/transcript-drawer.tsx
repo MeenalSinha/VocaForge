@@ -205,12 +205,12 @@ export function TranscriptDrawer({
                       }`}
                     >
                       <div
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-xs ${
                           isUser
                             ? "bg-accent text-accent-foreground"
                             : isAgent
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-foreground"
+                            ? "bg-surface text-accent border border-border"
+                            : "bg-subtle text-muted border border-border"
                         }`}
                         title={msg.role}
                       >
@@ -220,10 +220,10 @@ export function TranscriptDrawer({
                       <div
                         className={`max-w-[80%] rounded-lg p-3 text-xs leading-relaxed ${
                           isUser
-                            ? "bg-accent/15 text-foreground rounded-tr-none border border-accent/25"
+                            ? "bg-accent-soft text-foreground rounded-tr-none border border-accent/25 shadow-xs"
                             : isAgent
-                            ? "bg-surface text-foreground rounded-tl-none border shadow-xs"
-                            : "bg-muted text-muted-foreground"
+                            ? "bg-surface text-foreground rounded-tl-none border border-border shadow-xs"
+                            : "bg-subtle/80 text-muted border border-border/60"
                         }`}
                       >
                         <div className="mb-1 flex items-center justify-between gap-4 text-[10px] text-muted font-medium">

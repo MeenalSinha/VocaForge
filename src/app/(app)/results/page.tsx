@@ -266,86 +266,86 @@ export default function ResultsPage() {
       {/* KPI Metric Summary Cards */}
       {metrics && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Total Test Runs</p>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Total Test Runs</p>
+            <p className="mt-1.5 text-2xl font-bold tracking-tight text-foreground font-mono">
               {metrics.totalRuns}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">Recorded simulations</p>
+            <p className="mt-0.5 text-[11px] text-muted">Recorded simulations</p>
           </Card>
 
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Completed Evals</p>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Completed Evals</p>
+            <p className="mt-1.5 text-2xl font-bold tracking-tight text-foreground font-mono">
               {metrics.completedEvaluations}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">
+            <p className="mt-0.5 text-[11px] text-muted">
               {metrics.infrastructureErrors > 0
                 ? `${metrics.infrastructureErrors} infra error(s)`
                 : "0 infra errors"}
             </p>
           </Card>
 
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Passing Rate</p>
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Passing Rate</p>
             <p
-              className={`mt-1 text-2xl font-bold tracking-tight ${
+              className={`mt-1.5 text-2xl font-bold tracking-tight font-mono ${
                 metrics.passingRatePercentage === null
                   ? "text-muted"
                   : metrics.passingRatePercentage >= 80
-                    ? "text-emerald-500"
+                    ? "text-success"
                     : metrics.passingRatePercentage >= 50
-                      ? "text-amber-500"
-                      : "text-rose-500"
+                      ? "text-warning"
+                      : "text-danger"
               }`}
             >
               {metrics.passingRatePercentage !== null ? `${metrics.passingRatePercentage}%` : "N/A"}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">
+            <p className="mt-0.5 text-[11px] text-muted">
               {metrics.passedEvaluations}/{metrics.completedEvaluations} passed
             </p>
           </Card>
 
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Unresolved Findings</p>
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Unresolved Findings</p>
             <p
-              className={`mt-1 text-2xl font-bold tracking-tight ${
-                metrics.unresolvedFindings > 0 ? "text-amber-500" : "text-emerald-500"
+              className={`mt-1.5 text-2xl font-bold tracking-tight font-mono ${
+                metrics.unresolvedFindings > 0 ? "text-warning" : "text-success"
               }`}
             >
               {metrics.unresolvedFindings}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">
+            <p className="mt-0.5 text-[11px] text-muted">
               {metrics.totalFindings} total findings
             </p>
           </Card>
 
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Retest Resolution</p>
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Retest Resolution</p>
             <p
-              className={`mt-1 text-2xl font-bold tracking-tight ${
+              className={`mt-1.5 text-2xl font-bold tracking-tight font-mono ${
                 metrics.retestResolutionRatePercentage === null
                   ? "text-muted"
                   : metrics.retestResolutionRatePercentage >= 80
-                    ? "text-emerald-500"
-                    : "text-amber-500"
+                    ? "text-success"
+                    : "text-warning"
               }`}
             >
               {metrics.retestResolutionRatePercentage !== null
                 ? `${metrics.retestResolutionRatePercentage}%`
                 : "N/A"}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">
+            <p className="mt-0.5 text-[11px] text-muted">
               {metrics.resolvedRetestsCount}/{metrics.retestsCount} verified
             </p>
           </Card>
 
-          <Card className="p-3 text-center">
-            <p className="text-[11px] font-medium text-muted">Deployed Agents</p>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-accent">
+          <Card className="p-4 text-center shadow-xs">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">Deployed Agents</p>
+            <p className="mt-1.5 text-2xl font-bold tracking-tight text-accent font-mono">
               {metrics.deployedAgentsCount}
             </p>
-            <p className="mt-0.5 text-[10px] text-muted">Production releases</p>
+            <p className="mt-0.5 text-[11px] text-muted">Production releases</p>
           </Card>
         </div>
       )}
@@ -369,8 +369,8 @@ export default function ResultsPage() {
 
           <div className="mt-4">
             {metrics.totalFindings === 0 ? (
-              <div className="flex items-center gap-2 rounded-md bg-emerald-500/10 p-3 text-xs text-emerald-600 dark:text-emerald-400">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-2 rounded-md bg-success-soft p-3 text-xs text-success border border-success/20">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
                 <span>
                   No failure findings recorded. All simulation runs executed cleanly or have not identified discrepancies.
                 </span>
@@ -385,12 +385,12 @@ export default function ResultsPage() {
                       key={catKey}
                       className={`flex items-center justify-between rounded-md border p-2.5 text-xs transition-colors ${
                         count > 0
-                          ? "border-amber-500/30 bg-amber-500/5 text-foreground"
-                          : "border-subtle bg-subtle/20 text-muted opacity-60"
+                          ? "border-warning/30 bg-warning-soft text-foreground"
+                          : "border-border/60 bg-subtle/30 text-muted"
                       }`}
                     >
                       <div className="space-y-0.5 pr-2">
-                        <p className="font-medium">{meta.label}</p>
+                        <p className="font-medium text-foreground">{meta.label}</p>
                         <p className="line-clamp-1 text-[11px] text-muted">{meta.description}</p>
                       </div>
                       <Badge

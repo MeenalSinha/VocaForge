@@ -2,20 +2,26 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const control =
-  "w-full rounded-md border bg-surface px-3 text-sm placeholder:text-muted/70 disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-danger";
+  "w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted/60 transition-colors focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-danger";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-  ({ className, ...p }, ref) => <input ref={ref} className={cn(control, "h-9", className)} {...p} />,
+  ({ className, ...p }, ref) => <input ref={ref} className={cn(control, "h-9 shadow-[0_1px_2px_0_rgba(15,23,42,0.02)]", className)} {...p} />,
 );
 Input.displayName = "Input";
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
-  ({ className, ...p }, ref) => <textarea ref={ref} className={cn(control, "min-h-24 py-2", className)} {...p} />,
+  ({ className, ...p }, ref) => <textarea ref={ref} className={cn(control, "min-h-24 py-2 shadow-[0_1px_2px_0_rgba(15,23,42,0.02)]", className)} {...p} />,
 );
 Textarea.displayName = "Textarea";
 
 export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<HTMLSelectElement>>(
-  ({ className, ...p }, ref) => <select ref={ref} className={cn(control, "h-9 pr-8", className)} {...p} />,
+  ({ className, ...p }, ref) => (
+    <select
+      ref={ref}
+      className={cn(control, "h-9 pr-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.02)] cursor-pointer", className)}
+      {...p}
+    />
+  ),
 );
 Select.displayName = "Select";
 
@@ -32,10 +38,16 @@ export function Field({ id, label, hint, error, children }: FieldProps) {
   const describedBy = [hint ? `${id}-hint` : null, error ? `${id}-error` : null].filter(Boolean).join(" ") || undefined;
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium">{label}</label>
+      <label htmlFor={id} className="block text-xs font-medium uppercase tracking-wider text-muted">
+        {label}
+      </label>
       {children({ id, "aria-invalid": Boolean(error), "aria-describedby": describedBy })}
       {hint && <p id={`${id}-hint`} className="text-xs text-muted">{hint}</p>}
-      {error && <p id={`${id}-error`} role="alert" className="text-xs font-medium text-danger">{error}</p>}
+      {error && (
+        <p id={`${id}-error`} role="alert" className="text-xs font-medium text-danger">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

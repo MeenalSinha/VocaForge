@@ -545,7 +545,7 @@ export default function TestLabPage() {
       />
 
       {/* Top Project Selector & Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs">
         <div className="flex items-center gap-2">
           <FolderKanban className="h-4 w-4 text-muted" />
           <span className="text-xs font-semibold text-foreground">Active Project:</span>

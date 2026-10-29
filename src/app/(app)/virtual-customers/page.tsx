@@ -288,14 +288,14 @@ export default function VirtualCustomersPage() {
       />
 
       {/* Project Selector Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs">
         <div className="flex items-center gap-2">
-          <FolderKanban className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs font-semibold text-foreground">Active Project:</span>
+          <FolderKanban className="h-4 w-4 text-muted" />
+          <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Project:</span>
           <select
             value={selectedProjectId}
             onChange={(e) => setSelectedProjectId(e.target.value)}
-            className="h-8 rounded-md border border-border bg-background px-3 text-xs font-medium text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="h-8 rounded-md border border-border bg-surface px-3 text-xs font-medium text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             {projects.map((pr) => (
               <option key={pr.id} value={pr.id}>
@@ -306,14 +306,14 @@ export default function VirtualCustomersPage() {
         </div>
 
         {/* View Tabs */}
-        <div className="flex items-center gap-1 rounded-md bg-muted p-1 text-xs">
+        <div className="flex items-center gap-1 rounded-md bg-subtle p-1 text-xs border border-border/60">
           <button
             type="button"
             onClick={() => setActiveTab("personas")}
-            className={`flex items-center gap-1.5 rounded px-3 py-1 font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-all ${
               activeTab === "personas"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-surface text-accent shadow-xs font-semibold"
+                : "text-muted hover:text-foreground"
             }`}
           >
             <Users className="h-3.5 w-3.5" />
@@ -322,10 +322,10 @@ export default function VirtualCustomersPage() {
           <button
             type="button"
             onClick={() => setActiveTab("scenarios")}
-            className={`flex items-center gap-1.5 rounded px-3 py-1 font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-all ${
               activeTab === "scenarios"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-surface text-accent shadow-xs font-semibold"
+                : "text-muted hover:text-foreground"
             }`}
           >
             <FlaskConical className="h-3.5 w-3.5" />
@@ -334,10 +334,10 @@ export default function VirtualCustomersPage() {
           <button
             type="button"
             onClick={() => setActiveTab("templates")}
-            className={`flex items-center gap-1.5 rounded px-3 py-1 font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-all ${
               activeTab === "templates"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-surface text-accent shadow-xs font-semibold"
+                : "text-muted hover:text-foreground"
             }`}
           >
             <BookOpen className="h-3.5 w-3.5" />
@@ -348,16 +348,16 @@ export default function VirtualCustomersPage() {
 
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card className="p-3.5 text-center sm:text-left">
-          <span className="text-xs text-muted-foreground">Total Customers</span>
-          <p className="mt-1 text-2xl font-bold text-foreground">{stats.total}</p>
+        <Card className="p-4 text-center sm:text-left">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">Total Customers</span>
+          <p className="mt-1 text-2xl font-bold tracking-tight text-foreground font-mono">{stats.total}</p>
         </Card>
-        <Card className="p-3.5 text-center sm:text-left">
-          <span className="text-xs text-emerald-600 dark:text-emerald-400">Ready for Testing</span>
-          <p className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.ready}</p>
+        <Card className="p-4 text-center sm:text-left">
+          <span className="text-xs font-semibold uppercase tracking-wider text-success">Ready for Testing</span>
+          <p className="mt-1 text-2xl font-bold tracking-tight text-success font-mono">{stats.ready}</p>
         </Card>
-        <Card className="p-3.5 text-center sm:text-left">
-          <span className="text-xs text-amber-600 dark:text-amber-400">Needs Configuration</span>
+        <Card className="p-4 text-center sm:text-left">
+          <span className="text-xs font-semibold uppercase tracking-wider text-warning">Needs Configuration</span>
           <p className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400">
             {stats.draft + stats.needsConfig}
           </p>

@@ -35,14 +35,14 @@ export function TemplateLibrary({ onSelectTemplate }: TemplateLibraryProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold text-foreground">Persona Template Library</h2>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted">
             Extensible starting customer profiles representing diverse caller behaviors, edge cases, and expectations.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative w-48 sm:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted/60" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -54,7 +54,7 @@ export function TemplateLibrary({ onSelectTemplate }: TemplateLibraryProps) {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex h-9 rounded-md border border-border bg-background px-3 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-9 rounded-md border border-border bg-surface px-3 py-1 text-xs text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             <option value="all">All Categories</option>
             <option value="customer_experience">Customer Experience</option>
@@ -75,19 +75,19 @@ export function TemplateLibrary({ onSelectTemplate }: TemplateLibraryProps) {
                 <CategoryBadge category={t.category} />
               </div>
 
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 {t.description}
               </p>
 
               {/* Traits / Stats */}
-              <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="rounded bg-muted px-2 py-0.5 font-medium text-foreground">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
+                <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground border border-border/60">
                   Patience: {t.initialConfig.personality.patienceLevel}/5
                 </span>
-                <span className="rounded bg-muted px-2 py-0.5 font-medium text-foreground">
+                <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground border border-border/60">
                   Assertiveness: {t.initialConfig.personality.assertivenessLevel}/5
                 </span>
-                <span className="rounded bg-muted px-2 py-0.5 font-medium text-foreground">
+                <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground border border-border/60">
                   Familiarity: {t.initialConfig.personality.familiarityLevel}/5
                 </span>
               </div>
@@ -97,7 +97,7 @@ export function TemplateLibrary({ onSelectTemplate }: TemplateLibraryProps) {
                 {t.tags.map((tag, i) => (
                   <span
                     key={i}
-                    className="rounded border border-border/80 bg-muted/30 px-1.5 py-0.5 text-[11px] text-muted-foreground"
+                    className="rounded border border-border/80 bg-subtle/50 px-1.5 py-0.5 text-[11px] text-muted font-mono"
                   >
                     #{tag}
                   </span>
@@ -106,7 +106,7 @@ export function TemplateLibrary({ onSelectTemplate }: TemplateLibraryProps) {
 
               {/* Sample Starting utterance */}
               {t.initialConfig.startingContext.initialUtterance && (
-                <div className="rounded-md border border-border/60 bg-muted/20 p-2.5 text-xs italic text-muted-foreground">
+                <div className="rounded-md border border-border/60 bg-subtle/40 p-2.5 text-xs italic text-foreground/80">
                   &ldquo;{t.initialConfig.startingContext.initialUtterance}&rdquo;
                 </div>
               )}
