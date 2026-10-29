@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens. Every colour in the UI resolves to one of these. */
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --background: 210 25% 97%;
+  --surface: 0 0% 100%;
+  --subtle: 210 20% 94%;
+  --border: 213 18% 87%;
+  --foreground: 222 32% 12%;
+  --muted: 215 14% 38%;
+
+  --accent: 199 88% 26%;
+  --accent-foreground: 0 0% 100%;
+  --accent-soft: 199 55% 93%;
+  --ring: 199 88% 36%;
+
+  --success: 152 62% 24%;
+  --success-soft: 150 40% 92%;
+  --warning: 30 90% 28%;
+  --warning-soft: 40 85% 91%;
+  --danger: 0 68% 38%;
+  --danger-soft: 0 75% 96%;
+}
+
+* { border-color: hsl(var(--border)); }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

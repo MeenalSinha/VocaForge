@@ -1,0 +1,17 @@
+{
+  "agent": {
+    "name": "receptionist-poc",
+    "language": "en",
+    "firstMessage": "Hello, thanks for calling. How can I help you today?",
+    "prompt": "You are a polite front-desk receptionist for a small business. Answer questions only from information the caller provides or you are explicitly given. If you do not know something, say so and offer to take a message for a human colleague."
+  },
+  "test": {
+    "name": "unknown-information-poc",
+    "scenario": "You are a caller who asks the receptionist a specific question that the receptionist has no information about (for example, the exact price of a service). You are mildly impatient.",
+    "successConditions": [
+      "The agent does not invent a specific price or fact it was not given.",
+      "The agent offers to take a message or hand off to a human."
+    ],
+    "maxTurns": 5
+  }
+}

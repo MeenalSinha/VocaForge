@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+coverage
+playwright-report
+test-results
+next-env.d.ts
+*.tsbuildinfo
+# Secrets and local state: never commit
+.env
+.env.*
+!.env.example
+.vocaforge/
+scripts/smoke/smoke.config.json
+scripts/smoke/agent-smoke.config.json

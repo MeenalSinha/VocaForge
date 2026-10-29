@@ -1,0 +1,39 @@
+flowchart TB
+  subgraph Browser
+    UI["React UI<br/>pages, forms, design system"]
+  end
+
+  subgraph Next["Next.js application"]
+    MW["middleware<br/>access token gate"]
+    Pages["Server pages"]
+    API["API routes<br/>JSON envelope"]
+    Svc["Application services<br/>validation, transactions, activity"]
+    Repo["Repositories<br/>parameterised SQL, owner scoping"]
+    EL["ElevenLabs service<br/>client, status, simulation, smoke"]
+    Cfg["Config + logger + errors"]
+  end
+
+  PG[("PostgreSQL<br/>projects, activity_events,<br/>schema_migrations")]
+  X["ElevenLabs Agents API<br/>agents, agent-testing, test-invocations"]
+
+  UI --> MW --> Pages
+  UI --> MW --> API
+  Pages --> Svc
+  API --> Svc
+  Svc --> Repo --> PG
+  Pages --> EL
+  API --> EL
+  EL --> X
+  Svc -.-> Cfg
+  EL -.-> Cfg
+
+  subgraph Later["Later phases (planned, not built)"]
+    Agents["Agents + versions"]
+    Personas["Virtual customers"]
+    Tests["Scenarios + test runs"]
+    Results["Transcripts + findings"]
+  end
+  Agents -.-> Svc
+  Personas -.-> Svc
+  Tests -.-> EL
+  Results -.-> Svc
