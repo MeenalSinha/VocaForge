@@ -25,10 +25,12 @@ const schema = z.object({
   ELEVENLABS_AGENT_LLM: optionalString,
   ELEVENLABS_AGENT_TTS_MODEL: optionalString,
   ELEVENLABS_PREVIEW_MODEL: optionalString,
-  GENERATION_PROVIDER: z.enum(["anthropic"]).default("anthropic"),
+  GENERATION_PROVIDER: z.enum(["anthropic", "groq"]).default("anthropic"),
   ANTHROPIC_API_KEY: optionalString,
+  GROQ_API_KEY: optionalString,
   GENERATION_MODEL: optionalString,
-  GENERATION_BASE_URL: z.string().trim().default("https://api.anthropic.com").refine((v) => {
+  GENERATION_BASE_URL: z.string().trim().optional().refine((v) => {
+    if (!v) return true;
     try { return new URL(v).protocol === "https:"; } catch { return false; }
   }, "must be an https URL"),
   GENERATION_TIMEOUT_MS: z.coerce.number().int().min(1000).max(300000).default(60000),
@@ -46,7 +48,7 @@ export interface ConfigIssue {
 export interface AppConfig {
   database: { configured: boolean; url?: string; ssl: "auto" | "require" | "disable" };
   elevenlabs: { configured: boolean; apiKey?: string; baseUrl: string; agentLlm?: string; agentTtsModel?: string; previewModel?: string };
-  generation: { provider: "anthropic"; configured: boolean; apiKey?: string; model?: string; baseUrl: string; timeoutMs: number; promptMaxChars: number };
+  generation: { provider: "anthropic" | "groq"; configured: boolean; apiKey?: string; model?: string; baseUrl: string; timeoutMs: number; promptMaxChars: number };
   access: { tokenConfigured: boolean; allowUnauthenticated: boolean };
   issues: ConfigIssue[];
 }
@@ -66,6 +68,14 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     data = schema.parse(cleaned);
   }
 
+  const isGroq = data.GENERATION_PROVIDER === "groq" || Boolean(data.GROQ_API_KEY && !data.ANTHROPIC_API_KEY);
+  const genProvider: "anthropic" | "groq" = isGroq ? "groq" : "anthropic";
+  const genKey = isGroq ? (data.GROQ_API_KEY || data.ANTHROPIC_API_KEY) : data.ANTHROPIC_API_KEY;
+  const defaultModel = isGroq ? "llama-3.3-70b-versatile" : undefined;
+  const defaultBaseUrl = isGroq ? "https://api.groq.com/openai" : "https://api.anthropic.com";
+  const genModel = data.GENERATION_MODEL || defaultModel;
+  const genBaseUrl = (data.GENERATION_BASE_URL || defaultBaseUrl).replace(/\/+$/, "");
+
   return {
     database: { configured: Boolean(data.DATABASE_URL), url: data.DATABASE_URL, ssl: data.DATABASE_SSL },
     elevenlabs: {
@@ -77,11 +87,11 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
       previewModel: data.ELEVENLABS_PREVIEW_MODEL,
     },
     generation: {
-      provider: data.GENERATION_PROVIDER,
-      configured: Boolean(data.ANTHROPIC_API_KEY && data.GENERATION_MODEL),
-      apiKey: data.ANTHROPIC_API_KEY,
-      model: data.GENERATION_MODEL,
-      baseUrl: data.GENERATION_BASE_URL.replace(/\/+$/, ""),
+      provider: genProvider,
+      configured: Boolean(genKey && genModel),
+      apiKey: genKey,
+      model: genModel,
+      baseUrl: genBaseUrl,
       timeoutMs: data.GENERATION_TIMEOUT_MS,
       promptMaxChars: data.PROMPT_MAX_CHARS,
     },

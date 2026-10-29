@@ -90,7 +90,7 @@ export function AgentBuilder({ projects, starters, promptMax, generationReady, e
       <Card>
         <CardHeader><CardTitle>1. Describe your agent</CardTitle><Sparkles className="h-4 w-4 text-muted" aria-hidden /></CardHeader>
         <CardBody className="space-y-4">
-          {!generationReady && <Alert tone="warning" title="The generation provider is not configured">Set ANTHROPIC_API_KEY and GENERATION_MODEL on the server (see .env.example), then restart. Until then configurations cannot be generated.</Alert>}
+          {!generationReady && <Alert tone="warning" title="The generation provider is not configured">Set GROQ_API_KEY (or ANTHROPIC_API_KEY) and GENERATION_MODEL on the server (see .env.example), then restart. Until then configurations cannot be generated.</Alert>}
           <Field id="use-case" label="Starting point (optional)" hint={starter?.description ?? "Pick a starting point, or leave blank and describe anything."} error={undefined}>
             {(a) => (
               <Select {...a} value={useCase} onChange={(e) => setUseCase(e.target.value)}>

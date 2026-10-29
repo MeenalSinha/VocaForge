@@ -94,8 +94,8 @@ export default async function SettingsPage() {
             </div>
             <p className="text-xs text-muted leading-relaxed">
               {config.generation.configured
-                ? "Anthropic API credentials and target model are validated. Used for automated agent prompt generation and structured diff repairs."
-                : "Set ANTHROPIC_API_KEY and GENERATION_MODEL in .env.local to enable AI-assisted persona synthesis and failure remediation."}
+                ? `${config.generation.provider === "groq" ? "Groq" : "Anthropic"} API credentials and target model are validated. Used for automated agent prompt generation and structured diff repairs.`
+                : "Set GROQ_API_KEY (or ANTHROPIC_API_KEY) and GENERATION_MODEL in .env.local to enable AI-assisted persona synthesis and failure remediation."}
             </p>
           </CardBody>
         </Card>

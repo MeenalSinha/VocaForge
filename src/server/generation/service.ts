@@ -6,10 +6,14 @@ import { loadConfig } from "../config/env";
 import { ValidationError } from "../errors";
 import { logger } from "../logger";
 import { AnthropicProvider } from "./anthropic";
+import { GroqProvider } from "./groq";
 import { GenerationError, type GenerationProvider } from "./provider";
 
 export function getProvider(): GenerationProvider {
   const g = loadConfig().generation;
+  if (g.provider === "groq") {
+    return new GroqProvider({ apiKey: g.apiKey, model: g.model, baseUrl: g.baseUrl, timeoutMs: g.timeoutMs });
+  }
   return new AnthropicProvider({ apiKey: g.apiKey, model: g.model, baseUrl: g.baseUrl, timeoutMs: g.timeoutMs });
 }
 

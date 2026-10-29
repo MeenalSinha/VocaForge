@@ -36,6 +36,15 @@ describe("loadConfig", () => {
     expect(c.elevenlabs.configured).toBe(true);
     expect(c.database.configured).toBe(false);
   });
+
+  it("configures Groq generation provider automatically when GROQ_API_KEY is provided", () => {
+    const c = loadConfig({ GROQ_API_KEY: "gsk_test_key" });
+    expect(c.generation.provider).toBe("groq");
+    expect(c.generation.configured).toBe(true);
+    expect(c.generation.apiKey).toBe("gsk_test_key");
+    expect(c.generation.model).toBe("llama-3.3-70b-versatile");
+    expect(c.generation.baseUrl).toBe("https://api.groq.com/openai");
+  });
 });
 
 describe("requireDatabaseUrl", () => {
