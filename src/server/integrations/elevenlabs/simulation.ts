@@ -26,7 +26,9 @@ const ERRORED = new Set(["error", "errored", "cancelled", "canceled", "timed_out
 export function classifyRun(run: TestRun): SimulationOutcome {
   const status = run.status ? run.status.toLowerCase() : null;
   const result = run.condition_result?.result?.toLowerCase() ?? null;
-  const base = { status, rationale: run.condition_result?.rationale ?? null, testRunId: run.test_run_id ?? null };
+  const rawRationale = run.condition_result?.rationale;
+  const rationale = rawRationale ? (typeof rawRationale === "object" ? JSON.stringify(rawRationale) : String(rawRationale)) : null;
+  const base = { status, rationale, testRunId: run.test_run_id ?? null };
 
   if (status && PENDING.has(status)) return { ...base, kind: "pending" };
   if (status && ERRORED.has(status)) return { ...base, kind: "infrastructure_error" };

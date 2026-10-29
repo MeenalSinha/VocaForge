@@ -42,7 +42,7 @@ describe("loadConfig", () => {
     expect(c.generation.provider).toBe("groq");
     expect(c.generation.configured).toBe(true);
     expect(c.generation.apiKey).toBe("gsk_test_key");
-    expect(c.generation.model).toBe("llama-3.3-70b-versatile");
+    expect(c.generation.model).toBe("openai/gpt-oss-120b");
     expect(c.generation.baseUrl).toBe("https://api.groq.com/openai");
   });
 });

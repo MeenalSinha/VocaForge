@@ -71,7 +71,8 @@ export function normalizeTranscript(rawResponses: unknown[] | null | undefined):
 export function classifyRemoteRun(run: TestRun): NormalizedRunResult {
   const rawStatus = (run.status || "").toLowerCase().trim();
   const condResult = run.condition_result?.result?.toLowerCase().trim() || null;
-  const rationale = run.condition_result?.rationale || null;
+  const rawRationale = run.condition_result?.rationale;
+  const rationale = rawRationale == null ? null : typeof rawRationale === "object" ? JSON.stringify(rawRationale) : String(rawRationale);
   const transcript = normalizeTranscript(run.agent_responses);
 
   const metrics: SimulationMetrics = {

@@ -71,10 +71,17 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
   const isGroq = data.GENERATION_PROVIDER === "groq" || Boolean(data.GROQ_API_KEY && !data.ANTHROPIC_API_KEY);
   const genProvider: "anthropic" | "groq" = isGroq ? "groq" : "anthropic";
   const genKey = isGroq ? (data.GROQ_API_KEY || data.ANTHROPIC_API_KEY) : data.ANTHROPIC_API_KEY;
-  const defaultModel = isGroq ? "llama-3.3-70b-versatile" : undefined;
-  const defaultBaseUrl = isGroq ? "https://api.groq.com/openai" : "https://api.anthropic.com";
+  const defaultModel = isGroq ? "openai/gpt-oss-120b" : undefined;
   const genModel = data.GENERATION_MODEL || defaultModel;
-  const genBaseUrl = (data.GENERATION_BASE_URL || defaultBaseUrl).replace(/\/+$/, "");
+  let genBaseUrl: string;
+  if (isGroq) {
+    genBaseUrl = data.GENERATION_BASE_URL && !data.GENERATION_BASE_URL.includes("anthropic.com")
+      ? data.GENERATION_BASE_URL
+      : "https://api.groq.com/openai";
+  } else {
+    genBaseUrl = data.GENERATION_BASE_URL || "https://api.anthropic.com";
+  }
+  genBaseUrl = genBaseUrl.replace(/\/+$/, "");
 
   return {
     database: { configured: Boolean(data.DATABASE_URL), url: data.DATABASE_URL, ssl: data.DATABASE_SSL },

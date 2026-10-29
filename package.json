@@ -24,7 +24,8 @@
     "elevenlabs:cleanup": "tsx scripts/elevenlabs-cleanup.ts",
     "validate": "npm run typecheck && npm run lint && npm run test && npm run build",
     "phase2:smoke": "tsx scripts/phase2-smoke.ts",
-    "generation:check": "tsx scripts/generation-check.ts"
+    "generation:check": "tsx scripts/generation-check.ts",
+    "demo:setup": "tsx scripts/setup-demo.ts"
   },
   "dependencies": {
     "@elevenlabs/react": "^1.20.1",

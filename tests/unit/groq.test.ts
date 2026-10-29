@@ -7,7 +7,7 @@ const fail = (p: Promise<unknown>) => p.catch((x) => x) as Promise<GenerationErr
 describe("GroqProvider", () => {
   const opts = {
     apiKey: "gsk_secret_123",
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-120b",
     baseUrl: "https://api.groq.com/openai",
     timeoutMs: 500,
   };
@@ -46,7 +46,7 @@ describe("GroqProvider", () => {
     expect(String(url)).toBe("https://api.groq.com/openai/v1/chat/completions");
     expect((init?.headers as Record<string, string>)["Authorization"]).toBe("Bearer gsk_secret_123");
     expect(JSON.parse(String(init?.body))).toMatchObject({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       tool_choice: { type: "function", function: { name: "save_draft" } },
       tools: [
         {
@@ -114,3 +114,4 @@ describe("GroqProvider", () => {
     );
   });
 });
+

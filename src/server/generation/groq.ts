@@ -19,7 +19,7 @@ export class GroqProvider implements GenerationProvider {
         "The generation provider is not configured. Set GROQ_API_KEY and GENERATION_MODEL on the server.",
       );
     }
-    const model = this.o.model || "llama-3.3-70b-versatile";
+    const model = this.o.model || "openai/gpt-oss-120b";
     const baseUrl = (this.o.baseUrl || "https://api.groq.com/openai").replace(/\/+$/, "");
 
     const controller = new AbortController();
@@ -106,3 +106,4 @@ export class GroqProvider implements GenerationProvider {
     }
   }
 }
+

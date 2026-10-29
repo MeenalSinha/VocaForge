@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ElevenLabsStatusPanel } from "@/components/integration-card";
+import { DemoSetupCard } from "@/components/demo-setup-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -34,6 +35,9 @@ export default async function SettingsPage() {
       />
 
       <div className="space-y-6">
+        {/* Presentation Demo Setup */}
+        <DemoSetupCard />
+
         {/* ElevenLabs Integration */}
         <Card>
           <CardHeader>

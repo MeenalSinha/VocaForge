@@ -32,7 +32,7 @@ export const testRunSchema = z
     test_name: z.string().optional(),
     status: z.string().optional(),
     agent_responses: z.array(z.unknown()).nullish(),
-    condition_result: z.object({ result: z.string().optional(), rationale: z.string().nullish() }).passthrough().nullish(),
+    condition_result: z.object({ result: z.string().optional(), rationale: z.unknown().nullish() }).passthrough().nullish(),
   })
   .passthrough();
 
