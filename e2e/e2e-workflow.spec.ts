@@ -18,7 +18,7 @@ test.describe("Full End-to-End Primary Workflow Acceptance Test", () => {
     await page.getByLabel("Description (optional)").fill("Primary end-to-end acceptance project");
     await page.getByRole("button", { name: "Create project" }).click();
 
-    await page.waitForURL(/\/projects\/[0-9a-f-]+/, { timeout: 15000 });
+    await expect(page).toHaveURL(/\/projects\/[0-9a-f-]+/, { timeout: 15000 });
     await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
 
     await page.getByLabel("Description").fill("Primary project with updated persistence");

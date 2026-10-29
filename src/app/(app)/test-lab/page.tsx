@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/form";
 import { PageHeader } from "@/components/layout/page-header";
+import Link from "next/link";
 import { EmptyState, ErrorState } from "@/components/ui/feedback";
 import {
   ArrowLeft,
+  ArrowRight,
+  Sparkles,
   Bot,
   CheckCircle2,
   FlaskConical,
@@ -668,7 +671,39 @@ export default function TestLabPage() {
                     <p className="mt-0.5 text-muted">{activeBatch.errorMessage}</p>
                   </div>
                 )}
-              </Card>
+              
+                {["completed", "completed_with_failures", "failed"].includes(activeBatch.status) &&
+                  activeBatch.failedScenarios > 0 && (
+                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-accent/30 bg-accent-soft/40 p-3.5 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <Sparkles className="h-4 w-4 text-accent shrink-0" />
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            {activeBatch.failedScenarios} failure{activeBatch.failedScenarios > 1 ? "s" : ""} detected in this batch.
+                          </p>
+                          <p className="text-muted">
+                            Diagnose root causes with AI, review minimal prompt diffs, and verify fixes in Refinement.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href="/refinement"
+                          className="inline-flex items-center rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground shadow-xs hover:bg-accent/90 transition-colors gap-1.5"
+                        >
+                          <span>Go to Refinement</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Link>
+                        <Link
+                          href="/results"
+                          className="inline-flex items-center rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground hover:bg-subtle transition-colors"
+                        >
+                          <span>View Observability</span>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+</Card>
 
               {/* Individual Runs Grid */}
               <div className="space-y-3">

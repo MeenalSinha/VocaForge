@@ -58,7 +58,7 @@ test.describe("VocaForge End-to-End Browser Verification", () => {
     await page.getByRole("button", { name: "Create project" }).click();
 
     // Verify redirect to project page
-    await page.waitForURL(/\/projects\/[0-9a-f-]+/, { timeout: 15000 });
+    await expect(page).toHaveURL(/\/projects\/[0-9a-f-]+/, { timeout: 15000 });
     await expect(page.getByRole("heading", { name: projName })).toBeVisible();
 
     // Update description and verify persistence
