@@ -50,14 +50,14 @@ export function RunCard({ run, onInspect, onRerun }: RunCardProps) {
           </p>
         ) : (
           <p className="line-clamp-2 text-xs text-muted">
-            {run.scenarioSnapshot.objective.primaryGoal || "Testing scenario goal"}
+            {run.scenarioSnapshot?.objective?.primaryGoal || "Testing scenario goal"}
           </p>
         )}
       </div>
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-xs text-muted">
         <div className="flex items-center gap-3">
-          <span>{run.transcript.length} turns</span>
+          <span>{run.transcript?.length ?? 0} turns</span>
           {run.completedAt && (
             <span>{new Date(run.completedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
           )}

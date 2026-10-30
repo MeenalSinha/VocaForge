@@ -212,17 +212,17 @@ ${agent.config.behavior.instructions || "(None)"}
 
 === TESTED PERSONA ===
 Name: ${run.personaName}
-Category: ${run.personaSnapshot.personality.traits.join(", ")}
-Patience Level: ${run.personaSnapshot.personality.patienceLevel}/5
+Category: ${(run.personaSnapshot?.personality?.traits || []).join(", ") || "Standard"}
+Patience Level: ${run.personaSnapshot?.personality?.patienceLevel ?? 3}/5
 
 === SCENARIO & OBJECTIVES ===
 Scenario: ${run.scenarioName}
-Primary Goal: ${run.scenarioSnapshot.objective.primaryGoal}
-Expected Outcome: ${run.scenarioSnapshot.objective.expectedOutcome}
+Primary Goal: ${run.scenarioSnapshot?.objective?.primaryGoal || "Complete scenario objective"}
+Expected Outcome: ${run.scenarioSnapshot?.objective?.expectedOutcome || "Scenario succeeds"}
 Success Criteria:
-${run.scenarioSnapshot.evaluation.successCriteria.map((c) => `- ${c}`).join("\n")}
+${(run.scenarioSnapshot?.evaluation?.successCriteria || []).map((c) => `- ${c}`).join("\n") || "- Scenario completed"}
 Failure Conditions:
-${run.scenarioSnapshot.evaluation.failureConditions.map((c) => `- ${c}`).join("\n")}
+${(run.scenarioSnapshot?.evaluation?.failureConditions || []).map((c) => `- ${c}`).join("\n") || "- Scenario failed"}
 
 === REMOTE EVALUATION RATIONALE ===
 ${run.evaluationRationale || "Remote condition evaluation failed criteria."}
@@ -296,12 +296,12 @@ ${formattedTranscript || "(No transcript recorded)"}
         excerpt: m.message,
         timeInCallSecs: m.timeInCallSecs,
       })),
-      expectedBehavior: run.scenarioSnapshot.objective.expectedOutcome || "Complete scenario goal.",
+      expectedBehavior: run.scenarioSnapshot?.objective?.expectedOutcome || "Complete scenario goal.",
       observedBehavior: "Conversation failed remote evaluation criteria.",
       discrepancyExplanation: run.evaluationRationale || "Scenario requirements were not satisfied by the agent.",
       confidence: "hypothesis",
       isActionable: true,
-      suggestedAction: `Update agent behavior instructions to handle ${run.scenarioSnapshot.objective.primaryGoal}.`,
+      suggestedAction: `Update agent behavior instructions to handle ${run.scenarioSnapshot?.objective?.primaryGoal || "scenario objective"}.`,
       analysisMetadata: {
         analysisType: "heuristic_fallback",
         error: (err as Error).message,
