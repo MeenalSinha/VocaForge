@@ -239,8 +239,10 @@ async function runOutcomeProofBrowserAudit() {
 
     // Create a batch
     const batchRes = await pool.query(
-      `INSERT INTO simulation_batches (project_id, target_agent_id, remote_agent_id, name, status, total_scenarios, completed_scenarios)
-       VALUES ($1, $2, 'agent_remote_dummy', 'Outcome Proof Deterministic Test Batch', 'completed', 3, 3)
+      `INSERT INTO simulation_batches (
+        project_id, target_agent_id, remote_agent_id, name, status,
+        total_scenarios, completed_scenarios, passed_scenarios, failed_scenarios, remote_invocation_id
+       ) VALUES ($1, $2, 'agent_remote_dummy', 'Outcome Proof Deterministic Test Batch', 'completed_with_failures', 3, 3, 2, 1, 'inv_outcome_proof_seed')
        RETURNING id`,
       [projectId, agentId]
     );

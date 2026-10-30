@@ -111,8 +111,10 @@ test.describe("Independent Business Outcome Verification (Outcome Proof) E2E Spe
 
     // 5. Seed Batch
     const batchRes = await pool.query(
-      `INSERT INTO simulation_batches (project_id, target_agent_id, remote_agent_id, name, status, total_scenarios, completed_scenarios)
-       VALUES ($1, $2, 'remote_agent', 'Outcome Test Batch', 'completed', 3, 3) RETURNING id`,
+      `INSERT INTO simulation_batches (
+        project_id, target_agent_id, remote_agent_id, name, status,
+        total_scenarios, completed_scenarios, passed_scenarios, failed_scenarios, remote_invocation_id
+       ) VALUES ($1, $2, 'remote_agent', 'Outcome Test Batch', 'completed_with_failures', 3, 3, 2, 1, 'inv_outcome_proof_seed') RETURNING id`,
       [projectId, agentId]
     );
     batchId = batchRes.rows[0].id;

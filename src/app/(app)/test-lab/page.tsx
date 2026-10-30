@@ -624,7 +624,7 @@ export default function TestLabPage() {
                     <p className="text-xs text-muted">
                       ElevenLabs Invocation:{" "}
                       <span className="font-mono text-foreground font-medium">
-                        {activeBatch.remoteInvocationId || "Provisioning..."}
+                        {activeBatch.remoteInvocationId || (["completed", "completed_with_failures", "failed"].includes(activeBatch.status) ? "Completed Invocation" : "Provisioning...")}
                       </span>
                     </p>
                   </div>
@@ -643,28 +643,47 @@ export default function TestLabPage() {
                 </div>
 
                 {/* Progress Counters Bar */}
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 text-center">
-                  <div className="rounded-md border bg-subtle/40 p-2.5">
-                    <span className="text-[11px] text-muted uppercase font-semibold">Total Scenarios</span>
-                    <p className="mt-0.5 text-xl font-bold text-foreground">{activeBatch.totalScenarios}</p>
-                  </div>
-                  <div className="rounded-md border bg-subtle/40 p-2.5">
-                    <span className="text-[11px] text-muted uppercase font-semibold">Completed</span>
-                    <p className="mt-0.5 text-xl font-bold text-foreground">{activeBatch.completedScenarios}</p>
-                  </div>
-                  <div className="rounded-md border border-success/30 bg-success-soft/30 p-2.5">
-                    <span className="text-[11px] text-success uppercase font-semibold">Passed</span>
-                    <p className="mt-0.5 text-xl font-bold text-success">{activeBatch.passedScenarios}</p>
-                  </div>
-                  <div className="rounded-md border border-danger/30 bg-danger-soft/30 p-2.5">
-                    <span className="text-[11px] text-danger uppercase font-semibold">Failed</span>
-                    <p className="mt-0.5 text-xl font-bold text-danger">{activeBatch.failedScenarios}</p>
-                  </div>
-                  <div className="rounded-md border border-warning/30 bg-warning-soft/30 p-2.5">
-                    <span className="text-[11px] text-warning uppercase font-semibold">Errors</span>
-                    <p className="mt-0.5 text-xl font-bold text-warning">{activeBatch.erroredScenarios}</p>
-                  </div>
-                </div>
+                {(() => {
+                  const runs = activeRuns || [];
+                  const passedCount = runs.length > 0 
+                    ? runs.filter((r) => r.status === "passed").length 
+                    : activeBatch.passedScenarios;
+                  const failedCount = runs.length > 0 
+                    ? runs.filter((r) => r.status === "failed_evaluation" || r.evaluationResult === "failed").length 
+                    : activeBatch.failedScenarios;
+                  const erroredCount = runs.length > 0 
+                    ? runs.filter((r) => r.status === "infrastructure_error" || r.status === "timed_out" || r.status === "inconclusive").length 
+                    : activeBatch.erroredScenarios;
+                  const completedCount = runs.length > 0 
+                    ? runs.filter((r) => r.status !== "pending" && r.status !== "running").length 
+                    : activeBatch.completedScenarios;
+                  const totalCount = Math.max(activeBatch.totalScenarios, runs.length);
+
+                  return (
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 text-center">
+                      <div className="rounded-md border bg-subtle/40 p-2.5">
+                        <span className="text-[11px] text-muted uppercase font-semibold">Total Scenarios</span>
+                        <p className="mt-0.5 text-xl font-bold text-foreground">{totalCount}</p>
+                      </div>
+                      <div className="rounded-md border bg-subtle/40 p-2.5">
+                        <span className="text-[11px] text-muted uppercase font-semibold">Completed</span>
+                        <p className="mt-0.5 text-xl font-bold text-foreground">{completedCount}</p>
+                      </div>
+                      <div className="rounded-md border border-success/30 bg-success-soft/30 p-2.5">
+                        <span className="text-[11px] text-success uppercase font-semibold">Passed</span>
+                        <p className="mt-0.5 text-xl font-bold text-success">{passedCount}</p>
+                      </div>
+                      <div className="rounded-md border border-danger/30 bg-danger-soft/30 p-2.5">
+                        <span className="text-[11px] text-danger uppercase font-semibold">Failed</span>
+                        <p className="mt-0.5 text-xl font-bold text-danger">{failedCount}</p>
+                      </div>
+                      <div className="rounded-md border border-warning/30 bg-warning-soft/30 p-2.5">
+                        <span className="text-[11px] text-warning uppercase font-semibold">Errors</span>
+                        <p className="mt-0.5 text-xl font-bold text-warning">{erroredCount}</p>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {activeBatch.errorMessage && (
                   <div className="rounded-md border border-danger/30 bg-danger-soft p-3 text-xs text-danger">
