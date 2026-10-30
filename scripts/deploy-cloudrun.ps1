@@ -26,3 +26,4 @@ gcloud run deploy vocaforge `
   --port 8080 `
   --set-env-vars "$envVars" `
   --quiet
+

@@ -9,3 +9,6 @@ test-results
 scratch
 .env*.local
 docs
+
+
+.env.cloudsql
