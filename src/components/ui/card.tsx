@@ -1,10 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+// ElevenLabs style: Clean white card, hairline 1px border, soft micro-elevations
 export const Card = ({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "rounded-lg border border-border bg-surface shadow-[0_1px_3px_0_rgba(15,23,42,0.03)] transition-colors",
+      "rounded-xl border border-border/80 bg-surface shadow-xs transition-all duration-150",
       className,
     )}
     {...p}
@@ -12,7 +13,7 @@ export const Card = ({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) 
 );
 
 export const CardHeader = ({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex items-start justify-between gap-3 border-b border-border/70 px-5 py-3.5", className)} {...p} />
+  <div className={cn("flex items-start justify-between gap-3 border-b border-border/60 px-5 py-3.5", className)} {...p} />
 );
 
 export const CardTitle = ({ className, ...p }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -20,7 +21,7 @@ export const CardTitle = ({ className, ...p }: React.HTMLAttributes<HTMLHeadingE
 );
 
 export const CardDescription = ({ className, ...p }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-xs text-muted mt-0.5", className)} {...p} />
+  <p className={cn("text-xs text-muted mt-0.5 leading-relaxed", className)} {...p} />
 );
 
 export const CardBody = ({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) => (

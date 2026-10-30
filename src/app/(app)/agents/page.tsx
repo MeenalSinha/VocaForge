@@ -1,4 +1,4 @@
-import { Bot, Plus } from "lucide-react";
+import { Bot, Plus, Volume2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OperationActions } from "@/components/agents/operation-actions";
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState, ErrorState } from "@/components/ui/feedback";
 import { Select } from "@/components/ui/form";
-import { Table, Td, Th } from "@/components/ui/table";
 import { formatDateTime } from "@/lib/utils";
 import { listAgents, listOpenOperations } from "@/server/agents/service";
 import { isAppError } from "@/server/errors";
@@ -35,12 +34,12 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
     <>
       <PageHeader
         title="Conversational Voice Agents"
-        description="Configure, version, and manage ElevenLabs voice AI agents with verified system prompts, voice models, and conversational parameters."
+        description="Configure, test, version, and synchronize ElevenLabs voice AI agents. Manage prompts, voice models, stability, and human escalation workflows."
         breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Agents" }]}
         actions={
           <Button asChild size="sm">
             <Link href="/agents/new">
-              <Plus className="h-4 w-4" aria-hidden />
+              <Plus className="h-3.5 w-3.5 mr-1" aria-hidden />
               New Voice Agent
             </Link>
           </Button>
@@ -81,22 +80,26 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
         </Card>
       )}
 
-      {/* Filter Toolbar */}
-      <div className="mb-6 rounded-lg border border-border bg-surface p-4 shadow-xs">
-        <form method="get" className="flex items-end gap-3">
-          <div className="w-56">
-            <label htmlFor="status" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">
-              Display Agents
+      {/* Filter & View Toolbar */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/70 bg-surface p-4 shadow-xs">
+        <form method="get" className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label htmlFor="status" className="text-xs font-semibold text-foreground/80">
+              Filter:
             </label>
-            <Select id="status" name="status" defaultValue={status}>
+            <Select id="status" name="status" defaultValue={status} className="w-44 h-8 text-xs">
               <option value="active">Active Agents</option>
-              <option value="archived">Archived & Deleted</option>
+              <option value="archived">Archived Agents</option>
             </Select>
           </div>
-          <Button type="submit" variant="secondary" size="md">
-            Filter View
+          <Button type="submit" variant="secondary" size="sm">
+            Apply
           </Button>
         </form>
+
+        <div className="flex items-center gap-2 text-xs text-muted">
+          <span>{agents.length} agent{agents.length === 1 ? "" : "s"} deployed</span>
+        </div>
       </div>
 
       {error ? (
@@ -122,54 +125,85 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
           )}
         </EmptyState>
       ) : (
-        <div className="space-y-3">
-          <Table aria-label="Agents">
-            <thead>
-              <tr>
-                <Th className="w-1/4">Agent Name</Th>
-                <Th className="w-32">Use Case</Th>
-                <Th className="w-40">Project</Th>
-                <Th className="w-32">Voice Model</Th>
-                <Th className="w-48">Sync State</Th>
-                <Th className="w-36">Last Updated</Th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/60">
-              {agents.map((a) => (
-                <tr key={a.id} className="group hover:bg-subtle/40 transition-colors">
-                  <Td className="font-medium">
-                    <Link
-                      href={`/agents/${a.id}`}
-                      className="rounded font-semibold text-accent hover:underline focus:outline-none"
-                    >
-                      {a.name}
-                    </Link>
-                  </Td>
-                  <Td className="text-xs text-muted capitalize">{a.useCase?.replace(/-/g, " ") ?? "General"}</Td>
-                  <Td className="text-xs">
-                    <Link href={`/projects/${a.projectId}`} className="text-foreground hover:underline font-medium">
-                      {a.projectName}
-                    </Link>
-                  </Td>
-                  <Td className="font-mono text-xs text-muted">{a.voiceId ?? "Default"}</Td>
-                  <Td>
-                    <div className="flex flex-col items-start gap-1">
-                      <AgentStatusBadge status={a.status} />
-                      <SyncBadge agent={a} />
+        <div className="space-y-4">
+          {/* Card Grid View for Voice Agents */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {agents.map((a) => (
+              <Card
+                key={a.id}
+                className="group flex flex-col justify-between hover:border-foreground/30 hover:shadow-hover transition-all duration-200 overflow-hidden"
+              >
+                <div className="p-5 space-y-3.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-subtle flex items-center justify-center shrink-0 border border-border/80">
+                        <Volume2 className="h-4 w-4 text-foreground/80" />
+                      </div>
+                      <div>
+                        <Link
+                          href={`/agents/${a.id}`}
+                          className="font-semibold text-sm text-foreground group-hover:text-foreground hover:underline line-clamp-1"
+                        >
+                          {a.name}
+                        </Link>
+                        <p className="text-[11px] text-muted capitalize">
+                          {a.useCase?.replace(/-/g, " ") ?? "General Voice"}
+                        </p>
+                      </div>
                     </div>
-                  </Td>
-                  <Td className="whitespace-nowrap text-xs text-muted font-mono">
-                    <time dateTime={a.updatedAt}>{formatDateTime(a.updatedAt)}</time>
-                  </Td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <div className="flex items-center justify-between text-xs text-muted px-1">
+                    <AgentStatusBadge status={a.status} />
+                  </div>
+
+                  <div className="rounded-lg bg-subtle/50 p-2.5 space-y-1 text-xs">
+                    <div className="flex items-center justify-between text-muted">
+                      <span>Project</span>
+                      <Link
+                        href={`/projects/${a.projectId}`}
+                        className="text-foreground font-medium hover:underline truncate max-w-[140px]"
+                      >
+                        {a.projectName}
+                      </Link>
+                    </div>
+                    <div className="flex items-center justify-between text-muted">
+                      <span>Voice Model</span>
+                      <span className="font-mono text-[11px] text-foreground font-medium truncate max-w-[140px]">
+                        {a.voiceId ?? "Default"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1">
+                    <SyncBadge agent={a} />
+                    <span className="text-[10px] font-mono text-muted">
+                      {formatDateTime(a.updatedAt)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="border-t border-border/60 bg-subtle/30 px-5 py-2.5 flex items-center justify-between text-xs">
+                  <Link
+                    href={`/agents/${a.id}`}
+                    className="font-medium text-foreground hover:underline"
+                  >
+                    Configure Agent &rarr;
+                  </Link>
+                  <Link
+                    href={`/agents/${a.id}?tab=test`}
+                    className="text-[11px] text-muted hover:text-foreground font-medium flex items-center gap-1"
+                  >
+                    <Volume2 className="h-3 w-3" />
+                    Test Call
+                  </Link>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-muted px-1 pt-2">
             <span>
               Showing {agents.length} agent{agents.length === 1 ? "" : "s"}
             </span>
-            <span className="italic">Use &ldquo;Refresh remote status&rdquo; inside agent details to verify ElevenLabs sync.</span>
+            <span className="italic">Use &ldquo;Live Voice Testing&rdquo; inside each agent to test bi-directional WebSocket audio.</span>
           </div>
         </div>
       )}

@@ -9,12 +9,12 @@ export interface Crumb {
 
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="mb-2.5">
+    <nav aria-label="Breadcrumb" className="mb-3">
       <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
         {items.map((c, i) => (
           <li key={c.label} className="flex items-center gap-1.5">
             {c.href && i < items.length - 1 ? (
-              <Link href={c.href} className="rounded transition-colors hover:text-foreground">
+              <Link href={c.href} className="rounded-sm transition-colors hover:text-foreground">
                 {c.label}
               </Link>
             ) : (
@@ -22,7 +22,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
                 {c.label}
               </span>
             )}
-            {i < items.length - 1 && <ChevronRight className="h-3 w-3 text-muted/50" aria-hidden />}
+            {i < items.length - 1 && <ChevronRight className="h-3 w-3 text-muted/40" aria-hidden />}
           </li>
         ))}
       </ol>
@@ -42,12 +42,18 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-8 border-b border-border/50 pb-6">
       {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
-          {description && <p className="max-w-2xl text-sm text-muted leading-relaxed">{description}</p>}
+          <h1 className="text-2xl font-bold tracking-tight text-foreground font-sans">
+            {title}
+          </h1>
+          {description && (
+            <p className="max-w-3xl text-xs md:text-sm text-muted leading-relaxed">
+              {description}
+            </p>
+          )}
         </div>
         {actions && <div className="flex shrink-0 items-center gap-2.5">{actions}</div>}
       </div>

@@ -1,15 +1,20 @@
 "use client";
 
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
-import { Mic, MicOff, PhoneOff } from "lucide-react";
+import { Mic, MicOff, PhoneOff, Volume2, Sparkles } from "lucide-react";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert } from "@/components/ui/feedback";
 import { ApiError, api } from "@/lib/api";
+import { VoiceOrb, LiveWaveform, type AgentVoiceState } from "@/components/ui/voice-orb";
 
-interface Line { id: number; role: "user" | "agent"; text: string }
+interface Line {
+  id: number;
+  role: "user" | "agent";
+  text: string;
+}
 
 function Session({ agentId, agentName }: { agentId: string; agentName: string }) {
   const [lines, setLines] = React.useState<Line[]>([]);
@@ -23,10 +28,15 @@ function Session({ agentId, agentName }: { agentId: string; agentName: string })
   async function start() {
     setError(null);
     setLines([]);
-    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) { setError("This browser cannot access a microphone. Use a current browser over HTTPS or localhost."); return; }
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      setError("This browser cannot access a microphone. Use a current browser over HTTPS or localhost.");
+      return;
+    }
     setStarting(true);
     try {
-      const { signedUrl } = await api<{ signedUrl: string }>(`/api/agents/${agentId}/session`, { method: "POST" });
+      const { signedUrl } = await api<{ signedUrl: string }>(`/api/agents/${agentId}/session`, {
+        method: "POST",
+      });
       conversation.startSession({
         signedUrl,
         connectionType: "websocket",
@@ -39,46 +49,182 @@ function Session({ agentId, agentName }: { agentId: string; agentName: string })
       } as never);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "The session could not be started.");
-    } finally { setStarting(false); }
+    } finally {
+      setStarting(false);
+    }
   }
 
-  const labels: Record<string, string> = { connected: "Connected", connecting: "Connecting", disconnecting: "Ending", disconnected: "Not connected", error: "Connection error" };
+  // Derive genuine ElevenLabs voice state for Orb
+  const orbState: AgentVoiceState = React.useMemo(() => {
+    if (error) return "error";
+    if (status === "connecting" || starting) return "connecting";
+    if (status === "connected") {
+      return isSpeaking ? "speaking" : "listening";
+    }
+    return "idle";
+  }, [error, status, starting, isSpeaking]);
+
+  const labels: Record<string, string> = {
+    connected: "Live Session Active",
+    connecting: "Connecting to ElevenLabs...",
+    disconnecting: "Ending Session...",
+    disconnected: "Ready to Test",
+    error: "Connection Error",
+  };
   const label = labels[status] ?? status;
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader><CardTitle>Live conversation with {agentName}</CardTitle><Badge tone={status === "connected" ? "success" : status === "connecting" ? "warning" : "neutral"}>{label}</Badge></CardHeader>
-        <CardBody className="space-y-4">
-          <p className="text-sm text-muted">Your browser will ask for microphone access. Audio goes directly between your browser and ElevenLabs. The conversation uses your ElevenLabs credits. This transcript lives only on this page and is not saved by VocaForge.</p>
-          {error && <Alert tone="danger" title="Session problem">{error}</Alert>}
-          <div className="flex flex-wrap items-center gap-2">
-            {!active ? (
-              <Button onClick={start} loading={starting}><Mic className="h-4 w-4" aria-hidden />Start conversation</Button>
-            ) : (
-              <>
-                <Button variant="danger" onClick={() => conversation.endSession()}><PhoneOff className="h-4 w-4" aria-hidden />End conversation</Button>
-                <Button variant="secondary" onClick={() => setMuted(!isMuted)} aria-pressed={isMuted}>{isMuted ? <MicOff className="h-4 w-4" aria-hidden /> : <Mic className="h-4 w-4" aria-hidden />}{isMuted ? "Unmute microphone" : "Mute microphone"}</Button>
-              </>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Left / Top: Interactive ElevenLabs Voice Testing Stage */}
+      <div className="lg:col-span-5 space-y-4">
+        <Card className="overflow-hidden border-border/70 bg-gradient-to-b from-surface via-surface to-subtle/30 shadow-xs">
+          <CardHeader className="border-b border-border/50">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4 text-foreground/80" />
+                <CardTitle>Voice Agent Studio</CardTitle>
+              </div>
+              <Badge
+                tone={
+                  status === "connected"
+                    ? "success"
+                    : status === "connecting"
+                    ? "warning"
+                    : "neutral"
+                }
+              >
+                {label}
+              </Badge>
+            </div>
+          </CardHeader>
+
+          <CardBody className="flex flex-col items-center justify-center py-8 text-center space-y-6">
+            {/* Authentic Audio-Reactive Orb */}
+            <div className="py-2">
+              <VoiceOrb state={orbState} size="lg" />
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-base font-semibold text-foreground">{agentName}</h3>
+              <p className="text-xs text-muted max-w-xs">
+                {status === "connected"
+                  ? isSpeaking
+                    ? "Agent is speaking. You can speak to interrupt."
+                    : "Listening... speak into your microphone."
+                  : "Direct low-latency WebSocket connection to ElevenLabs Conversational AI."}
+              </p>
+            </div>
+
+            {/* Live Audio Waveform when active */}
+            <div className="h-6 flex items-center justify-center">
+              <LiveWaveform active={status === "connected"} barCount={24} />
+            </div>
+
+            {error && (
+              <div className="w-full text-left">
+                <Alert tone="danger" title="Session Problem">
+                  {error}
+                </Alert>
+              </div>
             )}
-            {status === "connected" && <span role="status" className="text-sm text-muted">{isSpeaking ? "Agent is speaking. You can interrupt." : "Listening"}</span>}
-          </div>
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>Transcript</CardTitle></CardHeader>
-        <CardBody>
-          {lines.length === 0 ? <p className="text-sm text-muted">Nothing yet. Messages appear here as the conversation happens.</p> : (
-            <ol aria-live="polite" className="space-y-2">
-              {lines.map((l) => <li key={l.id} className={l.role === "user" ? "text-right" : ""}><span className="mb-0.5 block text-xs text-muted">{l.role === "user" ? "You" : agentName}</span><span className={`inline-block rounded-md px-3 py-1.5 text-sm ${l.role === "user" ? "bg-accent-soft" : "bg-subtle"}`}>{l.text}</span></li>)}
-            </ol>
-          )}
-        </CardBody>
-      </Card>
+
+            {/* Tactile Control Buttons with Accessible Labels */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+              {!active ? (
+                <Button onClick={start} loading={starting} size="lg" className="px-6">
+                  <Mic className="h-4 w-4 mr-1.5" aria-hidden />
+                  Start conversation
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="danger"
+                    size="md"
+                    onClick={() => conversation.endSession()}
+                  >
+                    <PhoneOff className="h-4 w-4 mr-1.5" aria-hidden />
+                    End conversation
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={() => setMuted(!isMuted)}
+                    aria-pressed={isMuted}
+                  >
+                    {isMuted ? (
+                      <MicOff className="h-4 w-4 mr-1.5 text-danger" aria-hidden />
+                    ) : (
+                      <Mic className="h-4 w-4 mr-1.5" aria-hidden />
+                    )}
+                    {isMuted ? "Unmute microphone" : "Mute microphone"}
+                  </Button>
+                </>
+              )}
+            </div>
+
+            <p className="text-[11px] text-muted/70 max-w-xs leading-relaxed">
+              Audio streams bi-directionally over WebSockets. Real audio hardware test with your ElevenLabs voice quota.
+            </p>
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Right: Live Transcript & Interaction Log */}
+      <div className="lg:col-span-7">
+        <Card className="h-full min-h-[440px] flex flex-col border-border/70 shadow-xs">
+          <CardHeader className="border-b border-border/50">
+            <div className="flex items-center justify-between w-full">
+              <CardTitle>Transcript</CardTitle>
+              <span className="text-[11px] font-mono text-muted">
+                {lines.length} turn{lines.length === 1 ? "" : "s"}
+              </span>
+            </div>
+          </CardHeader>
+          <CardBody className="flex-1 p-5 overflow-y-auto">
+            {lines.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 text-center text-muted space-y-2">
+                <div className="w-10 h-10 rounded-full bg-subtle flex items-center justify-center">
+                  <Sparkles className="h-4 w-4 text-muted" />
+                </div>
+                <p className="text-xs font-medium text-foreground">Nothing yet.</p>
+                <p className="text-xs text-muted max-w-sm">
+                  Messages appear here as the conversation happens.
+                </p>
+              </div>
+            ) : (
+              <ol aria-live="polite" className="space-y-3.5">
+                {lines.map((l) => (
+                  <li
+                    key={l.id}
+                    className={`flex flex-col ${l.role === "user" ? "items-end" : "items-start"}`}
+                  >
+                    <span className="mb-1 text-[11px] font-medium text-muted">
+                      {l.role === "user" ? "You" : agentName}
+                    </span>
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
+                        l.role === "user"
+                          ? "bg-foreground text-background font-medium rounded-br-xs"
+                          : "bg-subtle text-foreground border border-border/70 rounded-bl-xs shadow-xs"
+                      }`}
+                    >
+                      {l.text}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </CardBody>
+        </Card>
+      </div>
     </div>
   );
 }
 
 export function LiveTest(props: { agentId: string; agentName: string }) {
-  return <ConversationProvider><Session {...props} /></ConversationProvider>;
+  return (
+    <ConversationProvider>
+      <Session {...props} />
+    </ConversationProvider>
+  );
 }

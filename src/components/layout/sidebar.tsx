@@ -13,7 +13,7 @@ interface NavSection {
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
-  // Group items into functional clusters for clean developer tool hierarchy
+  // ElevenLabs navigation groupings: Studio, Testing, Intelligence, Production
   const sections: NavSection[] = [
     {
       title: "Workspace",
@@ -24,16 +24,16 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       items: NAV_ITEMS.filter((i) => ["/virtual-customers", "/test-lab", "/results"].includes(i.href)),
     },
     {
-      title: "Operations & Release",
+      title: "Optimization & Release",
       items: NAV_ITEMS.filter((i) => ["/refinement", "/deployments", "/settings"].includes(i.href)),
     },
   ];
 
   return (
-    <nav aria-label="Primary" className="flex flex-1 flex-col gap-5 px-3 py-4">
+    <nav aria-label="Primary" className="flex flex-1 flex-col gap-6 px-3 py-4 select-none">
       {sections.map((section) => (
-        <div key={section.title} className="space-y-1">
-          <p className="px-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted/70">
+        <div key={section.title} className="space-y-1.5">
+          <p className="px-3 text-[11px] font-medium tracking-wide text-muted/70 uppercase">
             {section.title}
           </p>
           <div className="space-y-0.5">
@@ -46,22 +46,25 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all duration-150",
+                    "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150",
                     active
-                      ? "bg-accent-soft font-medium text-accent shadow-[inset_2px_0_0_0_hsl(var(--accent))]"
-                      : "text-foreground/90 hover:bg-subtle hover:text-foreground",
+                      ? "bg-foreground text-background font-semibold shadow-xs"
+                      : "text-foreground/80 hover:bg-subtle hover:text-foreground",
                   )}
                 >
                   <Icon
                     className={cn(
                       "h-4 w-4 shrink-0 transition-colors",
-                      active ? "text-accent" : "text-muted group-hover:text-foreground",
+                      active ? "text-background" : "text-muted group-hover:text-foreground",
                     )}
                     aria-hidden
                   />
                   <span className="flex-1 truncate">{label}</span>
                   {plannedPhase && (
-                    <span className="rounded bg-subtle px-1.5 py-0.5 text-[11px] text-muted">
+                    <span className={cn(
+                      "rounded-full px-1.5 py-0.2 text-[10px]",
+                      active ? "bg-white/20 text-white" : "bg-subtle text-muted"
+                    )}>
                       Phase {plannedPhase}
                     </span>
                   )}
@@ -79,26 +82,28 @@ export function Brand() {
   return (
     <Link
       href="/dashboard"
-      className="flex items-center gap-2.5 rounded-md px-1 py-1 text-base font-semibold tracking-tight transition-opacity hover:opacity-90"
+      className="flex items-center gap-2.5 rounded-lg px-2 py-1 text-sm font-semibold tracking-tight transition-opacity hover:opacity-90"
     >
-      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-accent-foreground shadow-[0_1px_2px_0_rgba(29,78,216,0.3)]">
+      {/* ElevenLabs-style minimal geometric mark */}
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background shadow-xs">
         <svg
           className="h-4 w-4"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.5"
+          strokeWidth="2.2"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="M12 2v20M17 5v14M7 9v6M22 10v4M2 11v2" />
+          {/* Audio waveform glyph */}
+          <path d="M12 3v18M17 7v10M7 8v8M21 11v2M3 11v2" />
         </svg>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="font-bold tracking-tight text-foreground">VocaForge</span>
-        <span className="rounded bg-accent/10 px-1.5 py-0.5 text-[10px] font-semibold text-accent">
-          v1.0
+      <div className="flex items-center gap-1.5">
+        <span className="font-semibold tracking-tight text-foreground text-[14px]">VocaForge</span>
+        <span className="rounded-full bg-subtle border border-border px-1.5 py-0.2 text-[9px] font-mono text-muted uppercase">
+          AI
         </span>
       </div>
     </Link>

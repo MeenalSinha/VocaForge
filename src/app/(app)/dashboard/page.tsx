@@ -28,6 +28,7 @@ import { logger, serializeError } from "@/server/logger";
 import { checkElevenLabs } from "@/server/integrations/elevenlabs";
 import { getDashboardData } from "@/server/projects/service";
 import { getPool } from "@/server/db/pool";
+import { VoiceOrb, LiveWaveform } from "@/components/ui/voice-orb";
 
 export const metadata: Metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -73,19 +74,19 @@ export default async function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="Quality Dashboard"
-        description="Autonomous testing and closed-loop refinement platform for ElevenLabs conversational voice agents. Simulate adversarial callers, identify failures, and verify prompt fixes before production."
+        title="Voice Quality Workspace"
+        description="Autonomous testing and closed-loop prompt engineering for ElevenLabs conversational voice agents. Simulate adversarial customer personas, diagnose policy failures, and verify prompt fixes before production rollout."
         actions={
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <Button asChild variant="secondary" size="sm">
               <Link href="/projects?new=1">
-                <FolderPlus className="h-4 w-4" aria-hidden />
+                <FolderPlus className="h-3.5 w-3.5 mr-1.5" aria-hidden />
                 New Project
               </Link>
             </Button>
             <Button asChild size="sm">
               <Link href="/test-lab">
-                <FlaskConical className="h-4 w-4" aria-hidden />
+                <FlaskConical className="h-3.5 w-3.5 mr-1.5" aria-hidden />
                 Launch Simulation
               </Link>
             </Button>
@@ -103,9 +104,54 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* ElevenLabs Interactive Studio Hero Banner */}
+      <section className="mb-8 overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-r from-surface via-surface to-subtle/40 p-6 md:p-8 shadow-xs">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 max-w-xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-subtle border border-border/80 px-3 py-1 text-xs font-medium text-foreground/80">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span>ElevenLabs Voice Engine Active</span>
+            </div>
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight text-foreground font-sans">
+              Test & refine conversational voice agents in real-time.
+            </h2>
+            <p className="text-xs md:text-sm text-muted leading-relaxed">
+              VocaForge bridges voice synthesis and virtual customer simulations. Deploy realistic personas to test latency, policy guardrails, and human escalation before releasing.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button asChild size="md">
+                <Link href="/agents/new">
+                  <Bot className="h-4 w-4 mr-1.5" />
+                  Create Voice Agent
+                </Link>
+              </Button>
+              <Button asChild variant="secondary" size="md">
+                <Link href="/virtual-customers">
+                  <Users className="h-4 w-4 mr-1.5" />
+                  Design Customer Persona
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* Interactive Voice Orb Feature Centerpiece */}
+          <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-surface/80 border border-border/60 shadow-xs text-center space-y-3 min-w-[220px]">
+            <VoiceOrb state="listening" size="md" />
+            <div>
+              <p className="text-xs font-semibold text-foreground">Interactive Audio Stage</p>
+              <p className="text-[11px] text-muted">Ready for live voice testing</p>
+            </div>
+            <LiveWaveform active={true} barCount={18} />
+          </div>
+        </div>
+      </section>
+
       {/* KPI Stats Ribbon */}
       <section aria-label="Workspace overview" className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="hover:border-border transition-all">
+        <Card className="hover:border-foreground/20 transition-all">
           <CardBody className="p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted">Active Projects</span>
@@ -116,14 +162,14 @@ export default async function DashboardPage() {
             </p>
             <div className="mt-2 flex items-center justify-between text-xs text-muted">
               <span>{workspace.ok ? `${workspace.data.counts.archived} archived` : "—"}</span>
-              <Link href="/projects" className="text-accent hover:underline flex items-center gap-0.5">
+              <Link href="/projects" className="text-foreground hover:underline flex items-center gap-0.5 font-medium">
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           </CardBody>
         </Card>
 
-        <Card className="hover:border-border transition-all">
+        <Card className="hover:border-foreground/20 transition-all">
           <CardBody className="p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted">Voice Agents</span>
@@ -134,14 +180,14 @@ export default async function DashboardPage() {
             </p>
             <div className="mt-2 flex items-center justify-between text-xs text-muted">
               <span>ElevenLabs synced</span>
-              <Link href="/agents" className="text-accent hover:underline flex items-center gap-0.5">
+              <Link href="/agents" className="text-foreground hover:underline flex items-center gap-0.5 font-medium">
                 Manage <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           </CardBody>
         </Card>
 
-        <Card className="hover:border-border transition-all">
+        <Card className="hover:border-foreground/20 transition-all">
           <CardBody className="p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted">Virtual Customers</span>
@@ -152,14 +198,14 @@ export default async function DashboardPage() {
             </p>
             <div className="mt-2 flex items-center justify-between text-xs text-muted">
               <span>Adversarial personas</span>
-              <Link href="/virtual-customers" className="text-accent hover:underline flex items-center gap-0.5">
+              <Link href="/virtual-customers" className="text-foreground hover:underline flex items-center gap-0.5 font-medium">
                 Studio <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           </CardBody>
         </Card>
 
-        <Card className="hover:border-border transition-all">
+        <Card className="hover:border-foreground/20 transition-all">
           <CardBody className="p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted">Simulation Pass Rate</span>
@@ -172,8 +218,10 @@ export default async function DashboardPage() {
               <span className="text-xs text-muted font-mono">({metrics.totalRuns} runs)</span>
             </div>
             <div className="mt-2 flex items-center justify-between text-xs text-muted">
-              <span>{metrics.findings} open findings</span>
-              <Link href="/results" className="text-accent hover:underline flex items-center gap-0.5">
+              <span className={metrics.findings > 0 ? "text-danger font-medium" : ""}>
+                {metrics.findings} open finding{metrics.findings === 1 ? "" : "s"}
+              </span>
+              <Link href="/results" className="text-foreground hover:underline flex items-center gap-0.5 font-medium">
                 Results <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
@@ -194,62 +242,62 @@ export default async function DashboardPage() {
             <CardBody className="p-4 space-y-2.5">
               <Link
                 href="/test-lab"
-                className="group flex items-center justify-between p-3 rounded-md border border-border/60 hover:border-accent/50 hover:bg-subtle/50 transition-all"
+                className="group flex items-center justify-between p-3.5 rounded-xl border border-border/70 hover:border-foreground/30 hover:bg-subtle/50 transition-all"
               >
-                <div className="flex items-start gap-3">
-                  <div className="grid h-8 w-8 place-items-center rounded bg-accent-soft text-accent">
+                <div className="flex items-start gap-3.5">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-foreground text-background shrink-0">
                     <FlaskConical className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                    <p className="text-sm font-semibold text-foreground transition-colors">
                       Run Adversarial Call Simulation
                     </p>
-                    <p className="text-xs text-muted">
+                    <p className="text-xs text-muted leading-relaxed">
                       Deploy virtual customer personas against your ElevenLabs agent to uncover policy violations.
                     </p>
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted group-hover:text-accent transition-colors shrink-0" />
+                <ArrowRight className="h-4 w-4 text-muted group-hover:text-foreground transition-colors shrink-0" />
               </Link>
 
               <Link
                 href="/refinement"
-                className="group flex items-center justify-between p-3 rounded-md border border-border/60 hover:border-accent/50 hover:bg-subtle/50 transition-all"
+                className="group flex items-center justify-between p-3.5 rounded-xl border border-border/70 hover:border-foreground/30 hover:bg-subtle/50 transition-all"
               >
-                <div className="flex items-start gap-3">
-                  <div className="grid h-8 w-8 place-items-center rounded bg-warning-soft text-warning">
+                <div className="flex items-start gap-3.5">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-warning-soft text-warning shrink-0 border border-warning/20">
                     <Wrench className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                    <p className="text-sm font-semibold text-foreground transition-colors">
                       Review Failure Findings & AI Fixes
                     </p>
-                    <p className="text-xs text-muted">
+                    <p className="text-xs text-muted leading-relaxed">
                       Inspect evidence citations, approve structured prompt diffs, and execute side-by-side retests.
                     </p>
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted group-hover:text-accent transition-colors shrink-0" />
+                <ArrowRight className="h-4 w-4 text-muted group-hover:text-foreground transition-colors shrink-0" />
               </Link>
 
               <Link
                 href="/deployments"
-                className="group flex items-center justify-between p-3 rounded-md border border-border/60 hover:border-accent/50 hover:bg-subtle/50 transition-all"
+                className="group flex items-center justify-between p-3.5 rounded-xl border border-border/70 hover:border-foreground/30 hover:bg-subtle/50 transition-all"
               >
-                <div className="flex items-start gap-3">
-                  <div className="grid h-8 w-8 place-items-center rounded bg-success-soft text-success">
+                <div className="flex items-start gap-3.5">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-success-soft text-success shrink-0 border border-success/20">
                     <Rocket className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                    <p className="text-sm font-semibold text-foreground transition-colors">
                       Release Readiness & Rollback Controls
                     </p>
-                    <p className="text-xs text-muted">
+                    <p className="text-xs text-muted leading-relaxed">
                       Automated quality gates ensure only verified agents promote to staging or production.
                     </p>
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted group-hover:text-accent transition-colors shrink-0" />
+                <ArrowRight className="h-4 w-4 text-muted group-hover:text-foreground transition-colors shrink-0" />
               </Link>
             </CardBody>
           </Card>
@@ -274,19 +322,19 @@ export default async function DashboardPage() {
                   </Button>
                 </EmptyState>
               ) : (
-                <ul className="divide-y divide-border/60">
+                <ul className="divide-y divide-border/50">
                   {workspace.data.activity.map((a) => (
                     <li key={a.id} className="flex items-start justify-between gap-4 py-3">
                       <div className="flex items-start gap-2.5">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-accent shrink-0" />
+                        <span className="mt-1 h-2 w-2 rounded-full bg-foreground shrink-0" />
                         <div>
-                          <p className="text-sm font-medium text-foreground">{a.summary}</p>
-                          <span className="text-[11px] font-mono text-muted uppercase tracking-wider">
+                          <p className="text-xs md:text-sm font-medium text-foreground">{a.summary}</p>
+                          <span className="text-[10px] font-mono text-muted uppercase tracking-wider">
                             {a.type}
                           </span>
                         </div>
                       </div>
-                      <time dateTime={a.createdAt} className="shrink-0 text-xs text-muted font-mono">
+                      <time dateTime={a.createdAt} className="shrink-0 text-[11px] text-muted font-mono">
                         {formatDateTime(a.createdAt)}
                       </time>
                     </li>
@@ -305,7 +353,7 @@ export default async function DashboardPage() {
               <Plug className="h-4 w-4 text-muted" aria-hidden />
             </CardHeader>
             <CardBody className="space-y-4">
-              <div className="space-y-3 divide-y divide-border/60 text-sm">
+              <div className="space-y-3 divide-y divide-border/50 text-sm">
                 <div className="flex items-center justify-between pb-2.5">
                   <div className="flex items-center gap-2">
                     <Cpu className="h-4 w-4 text-muted" />
@@ -335,14 +383,14 @@ export default async function DashboardPage() {
                     <ShieldCheck className="h-4 w-4 text-muted" />
                     <span>Quality Gates</span>
                   </div>
-                  <Badge tone="accent">Automated</Badge>
+                  <Badge tone="neutral">Automated</Badge>
                 </div>
               </div>
 
-              <div className="rounded-md bg-subtle p-3 text-xs text-muted space-y-1">
-                <p className="font-medium text-foreground">Local Mock & Cloud Mode</p>
-                <p>
-                  Full simulation, failure diagnosis, and prompt refinement run out of the box. Add your ElevenLabs key in Settings to sync live voice agents.
+              <div className="rounded-xl bg-subtle p-3.5 text-xs text-muted space-y-1">
+                <p className="font-semibold text-foreground">Local & Cloud Connected</p>
+                <p className="leading-relaxed">
+                  Full simulation, failure diagnosis, and prompt refinement run seamlessly. Add your ElevenLabs key in Settings to sync live voice agents.
                 </p>
               </div>
 
@@ -359,30 +407,30 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardBody className="space-y-3">
               <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent text-[11px] font-bold">1</span>
+                <div className="flex items-center gap-2.5 text-foreground font-medium">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[10px] font-bold">1</span>
                   <span>Agent Configuration (v1)</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent text-[11px] font-bold">2</span>
+                <div className="flex items-center gap-2.5 text-foreground font-medium">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[10px] font-bold">2</span>
                   <span>Virtual Customer Probing</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent text-[11px] font-bold">3</span>
+                <div className="flex items-center gap-2.5 text-foreground font-medium">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[10px] font-bold">3</span>
                   <span>Turn-Level Evidence Diagnosis</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent text-[11px] font-bold">4</span>
+                <div className="flex items-center gap-2.5 text-foreground font-medium">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[10px] font-bold">4</span>
                   <span>Autonomous AI Fix & Retest</span>
                 </div>
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent text-[11px] font-bold">5</span>
+                <div className="flex items-center gap-2.5 text-foreground font-medium">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[10px] font-bold">5</span>
                   <span>Gated Production Promotion (v2)</span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-border/60">
-                <Link href="/test-lab" className="text-xs text-accent hover:underline flex items-center justify-between">
+              <div className="pt-2 border-t border-border/50">
+                <Link href="/test-lab" className="text-xs text-foreground font-medium hover:underline flex items-center justify-between">
                   <span>Enter Test Lab</span>
                   <ArrowRight className="h-3 w-3" />
                 </Link>
