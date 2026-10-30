@@ -2,6 +2,12 @@
 
 Deploy virtual customers. Discover real problems. Launch with confidence.
 
+[![Google Cloud Run](https://img.shields.io/badge/Google_Cloud_Run-Live_Deployment-4285F4?logo=googlecloud&logoColor=white)](https://vocaforge-799175996958.us-central1.run.app)
+[![Health Status](https://img.shields.io/badge/Health_Check-/api/health-34A853)](https://vocaforge-799175996958.us-central1.run.app/api/health)
+
+🌐 **Live Demo URL:** [https://vocaforge-799175996958.us-central1.run.app](https://vocaforge-799175996958.us-central1.run.app)  
+*(Deployed on Google Cloud Run in GCP project `spatialguard`)*
+
 VocaForge is a complete platform for testing voice agents with virtual customers. This repository contains the complete implementation through **Phase 7 (Final Integration, Polish & Hackathon Release)**: project management, ElevenLabs voice agent lifecycle & live testing, persona modeling, structured test scenario generation, automated batch simulation execution, interactive Test Lab, failure diagnosis, dedicated Refinement & Remediation Workspace, AI fix proposals with visual diff review, retest verification, automated release readiness evaluation, production deployment workflows, telemetry & observability, and safe non-destructive rollback.
 
 ## Implemented now (Phases 0 to 7)
@@ -122,6 +128,21 @@ npm run dev                       # http://localhost:3000
 ```
 
 `npm run db:status` lists applied and pending migrations.
+
+## Live Cloud Deployment
+
+VocaForge is continuously deployed to **Google Cloud Run**:
+
+- **Production URL**: [https://vocaforge-799175996958.us-central1.run.app](https://vocaforge-799175996958.us-central1.run.app)
+- **Health Check**: [https://vocaforge-799175996958.us-central1.run.app/api/health](https://vocaforge-799175996958.us-central1.run.app/api/health)
+- **GCP Project**: `spatialguard`
+- **Region**: `us-central1`
+- **Platform**: Google Cloud Run (Containerized via standalone Next.js 15 Dockerfile)
+
+To redeploy or update environment variables:
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/deploy-cloudrun.ps1
+```
 
 ## Environment
 
