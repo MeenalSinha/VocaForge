@@ -19,6 +19,8 @@ import type {
 } from "@/server/analysis/schema";
 import { RunStatusBadge } from "./batch-status-badge";
 import { FailureFindingsCard } from "../analysis/failure-findings-card";
+import { OutcomeProofCard } from "./outcome-proof-card";
+import { evaluateOutcomeProof } from "@/server/analysis/outcome-proof";
 
 export interface TranscriptDrawerProps {
   run: SimulationRunRecord | null;
@@ -48,6 +50,15 @@ export function TranscriptDrawer({
   comparison = null,
   onViewComparison,
 }: TranscriptDrawerProps) {
+  const outcomeProof = React.useMemo(() => {
+    if (!run) return null;
+    return evaluateOutcomeProof({
+      transcript: run.transcript,
+      scenarioSnapshot: run.scenarioSnapshot,
+      rawResult: run.rawResult,
+    });
+  }, [run]);
+
   if (!run) return null;
 
   const isFailedOrInconclusive =
@@ -88,6 +99,9 @@ export function TranscriptDrawer({
               )}
             </div>
           </div>
+
+          {/* Outcome Proof Verification Evidence */}
+          <OutcomeProofCard proof={outcomeProof} />
 
           {/* Retest Comparison Banner if available */}
           {comparison && (

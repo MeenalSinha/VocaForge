@@ -13,6 +13,8 @@ import {
 import * as repo from "./repository";
 import { analyzeSimulationRun } from "./analyzer";
 import { generateRemediationFix } from "./fix-generator";
+import { evaluateOutcomeProof, type OutcomeProofResult } from "./outcome-proof";
+export { evaluateOutcomeProof, type OutcomeProofResult } from "./outcome-proof";
 import type { GenerationProvider } from "../generation/provider";
 import { getProvider } from "../generation/service";
 import type {
@@ -448,4 +450,24 @@ export async function getRefinementDataForProject(
   ]);
 
   return { findings, proposals, comparisons, unanalyzedRuns };
+}
+
+/**
+ * Evaluates the 3-layer deterministic Outcome Proof for an individual simulation run.
+ */
+export async function getOutcomeProofForRun(
+  runId: string,
+  ctx?: AnalysisContext,
+): Promise<OutcomeProofResult | null> {
+  const pool = poolOf(ctx);
+  const ownerId = ownerOf(ctx);
+
+  const run = await findRun(pool, ownerId, runId);
+  if (!run) throw new NotFoundError("Simulation run not found.");
+
+  return evaluateOutcomeProof({
+    transcript: run.transcript,
+    scenarioSnapshot: run.scenarioSnapshot,
+    rawResult: run.rawResult,
+  });
 }

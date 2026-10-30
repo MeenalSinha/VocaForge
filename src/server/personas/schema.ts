@@ -129,6 +129,23 @@ export const updatePersonaInputSchema = z.object({
 });
 export type UpdatePersonaInput = z.infer<typeof updatePersonaInputSchema>;
 
+export const outcomeContractSchema = z.object({
+  enabled: z.boolean().default(false),
+  action: z.string().trim().max(100).default("appointment_booking"),
+  parameters: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).default({}),
+  requiredStatus: z.string().trim().max(50).default("confirmed"),
+  requiredEvidence: z.string().trim().max(200).default("booking_record"),
+  claimPatterns: z.array(z.string().trim()).default([
+    "booked",
+    "confirmed",
+    "scheduled",
+    "appointment is set",
+    "appointment has been scheduled",
+    "all set",
+  ]),
+});
+export type OutcomeContract = z.infer<typeof outcomeContractSchema>;
+
 export const scenarioConfigSchema = z.object({
   objective: z
     .object({
@@ -168,6 +185,7 @@ export const scenarioConfigSchema = z.object({
       language: langCode.default("en"),
     })
     .default({ requiredCapabilities: [], language: "en" }),
+  outcomeContract: outcomeContractSchema.optional(),
 });
 
 export type ScenarioConfig = z.infer<typeof scenarioConfigSchema>;

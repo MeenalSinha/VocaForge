@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { FileText, RotateCw, User } from "lucide-react";
 import type { SimulationRunRecord } from "@/server/simulations/schema";
 import { RunStatusBadge } from "./batch-status-badge";
+import { OutcomeProofBadge } from "./outcome-proof-card";
+import { evaluateOutcomeProof } from "@/server/analysis/outcome-proof";
 
 export interface RunCardProps {
   run: SimulationRunRecord;
@@ -12,6 +14,14 @@ export interface RunCardProps {
 }
 
 export function RunCard({ run, onInspect, onRerun }: RunCardProps) {
+  const proof = React.useMemo(() => {
+    return evaluateOutcomeProof({
+      transcript: run.transcript,
+      scenarioSnapshot: run.scenarioSnapshot,
+      rawResult: run.rawResult,
+    });
+  }, [run]);
+
   return (
     <Card className="flex flex-col justify-between p-4 transition-shadow hover:shadow-sm">
       <div className="space-y-2.5">
@@ -23,7 +33,10 @@ export function RunCard({ run, onInspect, onRerun }: RunCardProps) {
               <span>{run.personaName}</span>
             </div>
           </div>
-          <RunStatusBadge status={run.status} />
+          <div className="flex flex-col items-end gap-1.5">
+            <RunStatusBadge status={run.status} />
+            <OutcomeProofBadge verdict={proof.verdict} />
+          </div>
         </div>
 
         {/* Evaluation Rationale Preview or Error */}

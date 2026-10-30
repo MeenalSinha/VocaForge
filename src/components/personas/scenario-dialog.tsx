@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Field, Input } from "@/components/ui/form";
 import { CodesField, LinesField } from "@/components/agents/lines-field";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 import type { AgentConfig } from "@/server/agents/config-schema";
 import type { PersonaRecord, ScenarioConfig, ScenarioPriority, ScenarioRecord } from "@/server/personas/schema";
 import { emptyScenarioConfig } from "@/server/personas/schema";
@@ -314,6 +314,131 @@ export function ScenarioDialog({
                 />
               )}
             </Field>
+          </div>
+
+          {/* Outcome Contract (Outcome Proof) */}
+          <div className="space-y-3 rounded-lg border border-accent/30 bg-accent/5 p-3.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Outcome Contract (Deterministic Outcome Proof)
+              </span>
+              <label className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={config.outcomeContract?.enabled ?? false}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      outcomeContract: {
+                        ...(prev.outcomeContract || {
+                          action: "appointment_booking",
+                          parameters: {},
+                          requiredStatus: "confirmed",
+                          requiredEvidence: "booking_record",
+                          claimPatterns: ["booked", "confirmed", "scheduled", "appointment is set", "all set"],
+                        }),
+                        enabled: e.target.checked,
+                      },
+                    }))
+                  }
+                  className="rounded border-border text-accent focus:ring-accent h-3.5 w-3.5"
+                />
+                <span className="font-medium">Require Proof</span>
+              </label>
+            </div>
+
+            {config.outcomeContract?.enabled && (
+              <div className="space-y-3 pt-2 border-t border-accent/20">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field id="oc-action" label="Expected Business Action">
+                    {(attrs) => (
+                      <Input
+                        {...attrs}
+                        value={config.outcomeContract?.action || "appointment_booking"}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              action: e.target.value,
+                            },
+                          }))
+                        }
+                        placeholder="e.g. appointment_booking"
+                      />
+                    )}
+                  </Field>
+                  <Field id="oc-status" label="Required System Status">
+                    {(attrs) => (
+                      <Input
+                        {...attrs}
+                        value={config.outcomeContract?.requiredStatus || "confirmed"}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              requiredStatus: e.target.value,
+                            },
+                          }))
+                        }
+                        placeholder="e.g. confirmed"
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field id="oc-day" label="Expected Day (Parameter)">
+                    {(attrs) => (
+                      <Input
+                        {...attrs}
+                        value={String(config.outcomeContract?.parameters?.day || "")}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              parameters: {
+                                ...prev.outcomeContract!.parameters,
+                                day: e.target.value,
+                              },
+                            },
+                          }))
+                        }
+                        placeholder="e.g. Tuesday"
+                      />
+                    )}
+                  </Field>
+                  <Field id="oc-time" label="Expected Time (Parameter)">
+                    {(attrs) => (
+                      <Input
+                        {...attrs}
+                        value={String(config.outcomeContract?.parameters?.time || "")}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              parameters: {
+                                ...prev.outcomeContract!.parameters,
+                                time: e.target.value,
+                              },
+                            },
+                          }))
+                        }
+                        placeholder="e.g. 3 PM"
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <p className="text-[11px] text-muted">
+                  Requires verifiable confirmation from the connected system. Verbal claims or unconfirmed tool calls alone will produce an <strong>UNVERIFIED</strong> verdict.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Measurable Success / Failure Criteria */}

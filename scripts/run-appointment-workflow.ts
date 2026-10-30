@@ -165,6 +165,7 @@ async function runAppointmentWorkflow() {
   }
 
   const run = polledRuns[0];
+  if (!run) throw new Error("No simulation runs returned from batch.");
   console.log(`[PASS] Simulation completed with status: ${run.status}`);
   console.log(`--> Evaluator Rationale: ${JSON.stringify(run.evaluationRationale)}`);
 
