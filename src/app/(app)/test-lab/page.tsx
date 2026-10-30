@@ -148,8 +148,9 @@ export default function TestLabPage() {
         if (!res.ok) throw new Error(json.error?.message || "Failed to load projects.");
         const items = json.data?.items || json.data || [];
         setProjects(items);
-        if (items.length > 0) {
-          setSelectedProjectId((prev) => prev || items[0].id);
+        const firstId = items[0]?.id;
+        if (firstId) {
+          setSelectedProjectId((prev) => prev || firstId);
         }
       } catch (err: unknown) {
         setError((err as Error).message);

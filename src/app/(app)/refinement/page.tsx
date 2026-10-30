@@ -88,8 +88,9 @@ export default function RefinementPage() {
 
         const list: ProjectOption[] = json.data?.items || (Array.isArray(json.data) ? json.data : []);
         setProjects(list);
-        if (list[0]) {
-          setSelectedProjectId((prev) => prev || list[0].id);
+        const firstId = list[0]?.id;
+        if (firstId) {
+          setSelectedProjectId((prev) => prev || firstId);
         }
       } catch (err: unknown) {
         setError((err as Error).message);
