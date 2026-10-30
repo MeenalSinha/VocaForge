@@ -112,7 +112,13 @@ export class ElevenLabsClient {
     const s = res.status;
     if (s === 401) return new ElevenLabsError("auth_invalid", "ElevenLabs rejected the API key.", s, details);
     if (s === 403) return new ElevenLabsError("permission_denied", "The API key lacks permission for this operation, or the plan does not include it.", s, details);
-    if (s === 404 || s === 405 || s === 410) return new ElevenLabsError("unsupported", "ElevenLabs does not support this operation at this endpoint (not found, or removed).", s, details);
+    if (s === 404 || s === 405 || s === 410) {
+      const isNotFound = s === 404 && details && (details.includes("not found") || details.includes("not_found"));
+      const msg = isNotFound
+        ? `ElevenLabs resource not found: ${details}`
+        : "ElevenLabs does not support this operation at this endpoint (not found, or removed).";
+      return new ElevenLabsError("unsupported", msg, s, details);
+    }
     if (s === 429) {
       const retry = Number(res.headers.get("retry-after"));
       return new ElevenLabsError("rate_limited", "ElevenLabs rate limit or concurrency limit reached.", s, details, Number.isFinite(retry) && retry > 0 ? retry : undefined);

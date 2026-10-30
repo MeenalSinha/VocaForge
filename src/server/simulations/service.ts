@@ -79,6 +79,10 @@ export async function runPreflightCheck(
 
   if (!agent.remoteAgentId) {
     summaryBlockers.push("Target voice agent has not been synchronized with ElevenLabs (missing remote agent ID).");
+  } else if (agent.remoteAgentId.startsWith("agent_remote_")) {
+    summaryBlockers.push(
+      `Voice agent "${agent.name}" has a local fixture ID (${agent.remoteAgentId}) and has not been created on ElevenLabs. Please select an agent synchronized with ElevenLabs or create an agent via the Agent Builder.`,
+    );
   }
 
   const scenarioWarnings: PreflightItemWarning[] = [];
@@ -352,6 +356,13 @@ export async function startSimulationBatch(
     }
 
     if (isElevenLabsError(err)) {
+      if (err.status === 404 || err.details?.includes("not found") || err.details?.includes("not_found")) {
+        throw new AppError(
+          "elevenlabs_not_found",
+          404,
+          `Voice agent "${agent.name}" (remote ID: ${agent.remoteAgentId}) was not found in your ElevenLabs account. Please select a synchronized agent or re-create it in ElevenLabs before running simulations.`,
+        );
+      }
       throw new AppError(`elevenlabs_${err.kind}`, 502, `ElevenLabs test execution rejected: ${err.message}`);
     }
     throw new AppError("simulation_execution_failed", 502, errMessage);

@@ -220,7 +220,13 @@ export async function syncAgent(id: string, context?: AgentContext): Promise<Age
   if (agent.status === "archived" || agent.status === "remote_deleted") throw new ConflictError("This agent is archived.");
   const submitted = agent.configVersion;
   try {
-    await c.remote.updateAgent(agent.remoteAgentId, buildRemotePayload(agent.config, remoteOpts()));
+    const isLocalPlaceholder = !agent.remoteAgentId || agent.remoteAgentId.startsWith("agent_remote_");
+    if (isLocalPlaceholder) {
+      const res = await c.remote.createAgentFromPayload(buildRemotePayload(agent.config, remoteOpts()));
+      await c.store.query("UPDATE agents SET remote_agent_id = $1 WHERE id = $2", [res.agentId, agent.id]);
+    } else {
+      await c.remote.updateAgent(agent.remoteAgentId, buildRemotePayload(agent.config, remoteOpts()));
+    }
   } catch (err) {
     const mapped = fromRemote(err);
     try {
