@@ -89,7 +89,7 @@ export default function RefinementPage() {
         const list: ProjectOption[] = json.data?.items || (Array.isArray(json.data) ? json.data : []);
         setProjects(list);
         if (list[0]) {
-          setSelectedProjectId(list[0].id);
+          setSelectedProjectId((prev) => prev || list[0].id);
         }
       } catch (err: unknown) {
         setError((err as Error).message);

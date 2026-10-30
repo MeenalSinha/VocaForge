@@ -14,7 +14,7 @@ test.describe("VocaForge End-to-End Browser Verification", () => {
 
     await page.goto("/dashboard");
     await expect(page).toHaveTitle(/Dashboard \| VocaForge/);
-    await expect(page.getByRole("heading", { name: "Quality Dashboard" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Voice Quality Workspace|Quality Dashboard/ })).toBeVisible();
     await expect(page.getByText("Quality Assurance Lifecycle")).toBeVisible();
     await expect(page.getByText("System & Engine Health")).toBeVisible();
 

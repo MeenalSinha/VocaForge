@@ -8,7 +8,7 @@ import { CodesField, LinesField } from "@/components/agents/lines-field";
 import { AlertCircle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 import type { AgentConfig } from "@/server/agents/config-schema";
 import type { PersonaRecord, ScenarioConfig, ScenarioPriority, ScenarioRecord } from "@/server/personas/schema";
-import { emptyScenarioConfig } from "@/server/personas/schema";
+import { emptyScenarioConfig, scenarioConfigSchema } from "@/server/personas/schema";
 import { evaluateScenarioReadiness } from "@/server/personas/readiness";
 import { toast } from "sonner";
 
@@ -56,7 +56,12 @@ export function ScenarioDialog({
       setPersonaId(initialScenario.personaId);
       setTargetAgentId(initialScenario.targetAgentId || "");
       setPriority(initialScenario.priority);
-      setConfig(initialScenario.config);
+      try {
+        setConfig(scenarioConfigSchema.parse(initialScenario.config || {}));
+      } catch (err) {
+        console.error("ScenarioDialog parse error:", err);
+        setConfig(emptyScenarioConfig());
+      }
     } else {
       setName("");
       setDescription("");
@@ -325,6 +330,7 @@ export function ScenarioDialog({
               </span>
               <label className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer">
                 <input
+                  id="oc-enabled"
                   type="checkbox"
                   checked={config.outcomeContract?.enabled ?? false}
                   onChange={(e) =>
@@ -389,8 +395,8 @@ export function ScenarioDialog({
                   </Field>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <Field id="oc-day" label="Expected Day (Parameter)">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <Field id="oc-day" label="Expected Day">
                     {(attrs) => (
                       <Input
                         {...attrs}
@@ -411,7 +417,7 @@ export function ScenarioDialog({
                       />
                     )}
                   </Field>
-                  <Field id="oc-time" label="Expected Time (Parameter)">
+                  <Field id="oc-time" label="Expected Time">
                     {(attrs) => (
                       <Input
                         {...attrs}
@@ -430,6 +436,52 @@ export function ScenarioDialog({
                         }
                         placeholder="e.g. 3 PM"
                       />
+                    )}
+                  </Field>
+                  <Field id="oc-patient" label="Expected Patient / User">
+                    {(attrs) => (
+                      <Input
+                        {...attrs}
+                        value={String(config.outcomeContract?.parameters?.patientName || config.outcomeContract?.parameters?.patient || "")}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              parameters: {
+                                ...prev.outcomeContract!.parameters,
+                                patientName: e.target.value,
+                              },
+                            },
+                          }))
+                        }
+                        placeholder="e.g. Marcus Vance"
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field id="oc-evidence" label="Required Evidence Type">
+                    {(attrs) => (
+                      <select
+                        {...attrs}
+                        value={config.outcomeContract?.requiredEvidence || "booking_record"}
+                        onChange={(e) =>
+                          setConfig((prev) => ({
+                            ...prev,
+                            outcomeContract: {
+                              ...prev.outcomeContract!,
+                              requiredEvidence: e.target.value,
+                            },
+                          }))
+                        }
+                        className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <option value="booking_record">Booking Record (Persisted in DB / System)</option>
+                        <option value="api_response">API Response (Booking Engine Confirmation)</option>
+                        <option value="calendar_event">Calendar Event (Google / Outlook Integration)</option>
+                      </select>
                     )}
                   </Field>
                 </div>
@@ -503,7 +555,7 @@ export function ScenarioDialog({
               id="req-caps"
               label="Required Capabilities"
               hint="Comma separated (e.g. appointment_booking)"
-              value={config.compatibility.requiredCapabilities}
+              value={config.compatibility?.requiredCapabilities || []}
               onChange={(caps) => updateCompatibility({ requiredCapabilities: caps })}
             />
           </div>

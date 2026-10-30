@@ -149,7 +149,7 @@ export default function TestLabPage() {
         const items = json.data?.items || json.data || [];
         setProjects(items);
         if (items.length > 0) {
-          setSelectedProjectId(items[0].id);
+          setSelectedProjectId((prev) => prev || items[0].id);
         }
       } catch (err: unknown) {
         setError((err as Error).message);

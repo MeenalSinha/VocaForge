@@ -124,8 +124,9 @@ All 5 core engine tests and 3 UI component tests pass with 100% assertion covera
 
 ---
 
-## 5. Test Suite Verification Summary
+## 5. Test Suite & End-to-End Browser Audit Summary
 
+### A. Vitest Unit & UI Tests
 ```bash
  RUN  vitest run
  ✓ tests/unit/outcome-proof.test.ts (5 tests)
@@ -137,5 +138,51 @@ All 5 core engine tests and 3 UI component tests pass with 100% assertion covera
  Test Files  37 passed (37)
       Tests  299 passed (299)
 ```
+
+### B. Playwright End-to-End Real Browser Audit (`e2e/outcome-proof-browser.spec.ts`)
+```bash
+Running 3 tests using 1 worker
+
+  ok 1 e2e/outcome-proof-browser.spec.ts › Test A: Verify Outcome Contract Editing and Persistence via Browser UI (9.2s)
+  ok 2 e2e/outcome-proof-browser.spec.ts › Test B: Inspect Verified Business Outcome in Results UI (3.8s)
+  ok 3 e2e/outcome-proof-browser.spec.ts › Test C: Inspect Unverified and Failed Business Outcomes in Results UI (4.6s)
+
+  3 passed (22.2s)
+```
+
+### C. Comprehensive Automated Browser Workflow Audit (`scripts/test-outcome-proof-e2e.ts`)
+```bash
+[PHASE 0] Verifying PostgreSQL connection and schema...
+[PASS] Connected to PostgreSQL: vocaforge as vocaforge
+[PASS] Created project: "Outcome Proof QA Clinic"
+[PASS] Created voice agent, persona, and scenario with Outcome Contract.
+
+[PHASE 1] Launching Chromium browser to verify UI & Contract Persistence...
+[PASS] Outcome Contract 'Require Proof' checkbox is checked.
+[PASS] Contract form inputs verified (Action: create_appointment, Status: confirmed, Day: Tuesday, Time: 3 PM, Patient: Marcus Vance).
+[PASS] Scenario and contract remain fully persisted after browser reload.
+
+[PHASE 2] Seeding simulation executions for all 3 Canonical Situations...
+[PASS] Run 1 seeded (Situation 1 - Claim Without Execution)
+[PASS] Run 2 seeded (Situation 2 - Mismatched Parameters)
+[PASS] Run 3 seeded (Situation 3 - Verified Business Outcome)
+
+[PHASE 3] Validating /api/simulations/runs/:id/outcome-proof endpoint responses...
+[PASS] Run 1 API verified: UNVERIFIED verdict (verbal claim recognized, zero tool/evidence).
+[PASS] Run 2 API verified: FAILED verdict (parameter mismatch detected).
+[PASS] Run 3 API verified: VERIFIED verdict (all 3 layers satisfied and 4/4 field matches).
+
+[PHASE 4] Testing UI Rendering in Browser at /results...
+[PASS] OutcomeProofCard rendered with 'Outcome: VERIFIED' badge.
+[PASS] 3 independent evaluation layers (A, B, C) visible in browser.
+[PASS] Field comparison table rendered with contract vs system values.
+[PASS] OutcomeProofCard rendered with 'Outcome: UNVERIFIED' badge & verbal claim warning.
+[PASS] OutcomeProofCard rendered with 'Outcome: FAILED' badge & parameter mismatch highlighted.
+
+ALL OUTCOME PROOF BROWSER AUDIT TESTS PASSED SUCCESSFULLY!
+```
+
 - **TypeScript (`npx tsc --noEmit`):** 0 errors
 - **ESLint (`npm run lint`):** 0 errors, 0 warnings
+
+

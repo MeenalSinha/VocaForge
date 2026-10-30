@@ -55,6 +55,27 @@ function normalizeVal(val: unknown): string {
   return JSON.stringify(val).toLowerCase();
 }
 
+const KEY_ALIASES: Record<string, string[]> = {
+  patientname: ["patientname", "patient_name", "patient", "customer", "customer_name", "name"],
+  patient: ["patient", "patientname", "patient_name", "customer", "customer_name", "name"],
+  day: ["day", "date", "appointment_date", "appointmentday"],
+  date: ["date", "day", "appointment_date", "appointmentday"],
+  time: ["time", "slot", "appointment_time", "appointmenttime"],
+};
+
+function findValueByField(obj: Record<string, unknown>, field: string): { key: string; val: unknown } | null {
+  const lower = field.toLowerCase().replace(/[_-]/g, "");
+  const aliases = KEY_ALIASES[lower] || [lower];
+
+  for (const objKey of Object.keys(obj)) {
+    const normKey = objKey.toLowerCase().replace(/[_-]/g, "");
+    if (aliases.some((a) => a.replace(/[_-]/g, "") === normKey)) {
+      return { key: objKey, val: obj[objKey] };
+    }
+  }
+  return null;
+}
+
 /**
  * Resolves an active or inferred OutcomeContract.
  */
@@ -248,9 +269,9 @@ export function evaluateOutcomeProof(input: OutcomeEvaluationInput): OutcomeProo
 
   if (executed && invokedParameters) {
     for (const [k, expectedVal] of Object.entries(contract.parameters)) {
-      // Look for key in invokedParameters (case-insensitive check)
-      const matchingKey = Object.keys(invokedParameters).find((p) => p.toLowerCase() === k.toLowerCase());
-      const actualVal = matchingKey ? invokedParameters[matchingKey] : undefined;
+      // Look for key in invokedParameters with alias support
+      const match = findValueByField(invokedParameters, k);
+      const actualVal = match ? match.val : undefined;
 
       if (actualVal === undefined || normalizeVal(actualVal) !== normalizeVal(expectedVal)) {
         parametersMatch = false;
@@ -315,15 +336,15 @@ export function evaluateOutcomeProof(input: OutcomeEvaluationInput): OutcomeProo
 
   // 2. Expected parameters from contract
   for (const [key, expectedVal] of Object.entries(contract.parameters)) {
-    // Check evidence first, then tool invocation
+    // Check evidence first, then tool invocation with alias support
     let actualVal: unknown = undefined;
     if (rawEvidence) {
-      const matchKey = Object.keys(rawEvidence).find((k) => k.toLowerCase() === key.toLowerCase());
-      if (matchKey) actualVal = rawEvidence[matchKey];
+      const match = findValueByField(rawEvidence, key);
+      if (match) actualVal = match.val;
     }
     if (actualVal === undefined && invokedParameters) {
-      const matchKey = Object.keys(invokedParameters).find((k) => k.toLowerCase() === key.toLowerCase());
-      if (matchKey) actualVal = invokedParameters[matchKey];
+      const match = findValueByField(invokedParameters, key);
+      if (match) actualVal = match.val;
     }
 
     if (actualVal === undefined || actualVal === null) {

@@ -8,3 +8,4 @@ export const GET = route(async (_req: Request, { params }: { params: Promise<{ i
   const proof = await getOutcomeProofForRun(id);
   return ok({ proof });
 });
+

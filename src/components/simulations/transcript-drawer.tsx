@@ -93,7 +93,7 @@ export function TranscriptDrawer({
               )}
             </div>
             <div className="flex items-center gap-3 text-muted">
-              {run.metrics.turnsCount !== undefined && <span>{run.metrics.turnsCount} turns</span>}
+              {run.metrics?.turnsCount !== undefined && <span>{run.metrics.turnsCount} turns</span>}
               {run.completedAt && (
                 <span>Finished {new Date(run.completedAt).toLocaleTimeString()}</span>
               )}
@@ -264,13 +264,13 @@ export function TranscriptDrawer({
               <div className="rounded border bg-surface p-2.5">
                 <span className="font-semibold text-foreground">Primary Mission Goal:</span>
                 <p className="mt-1 text-muted">
-                  {run.scenarioSnapshot.objective.primaryGoal || "Not specified"}
+                  {run.scenarioSnapshot?.objective?.primaryGoal || "Not specified"}
                 </p>
               </div>
               <div className="rounded border bg-surface p-2.5">
                 <span className="font-semibold text-foreground">Success Criteria:</span>
                 <ul className="mt-1 list-disc space-y-0.5 pl-4 text-muted">
-                  {(run.scenarioSnapshot.evaluation.successCriteria || []).map((c, idx) => (
+                  {(run.scenarioSnapshot?.evaluation?.successCriteria || []).map((c, idx) => (
                     <li key={idx}>{c}</li>
                   ))}
                 </ul>

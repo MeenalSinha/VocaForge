@@ -63,18 +63,18 @@ export function ScenarioCard({
             </span>
           )}
           <span className="rounded bg-subtle/50 px-2 py-0.5 text-xs text-muted">
-            Max {config.executionLimits.maxTurns} turns
+            Max {config.executionLimits?.maxTurns ?? 10} turns
           </span>
         </div>
 
         {/* Success Criteria Preview */}
-        {config.evaluation.successCriteria.length > 0 && (
+        {(config.evaluation?.successCriteria?.length ?? 0) > 0 && (
           <div className="rounded-md border bg-subtle/40 p-2.5 text-xs">
             <span className="font-semibold text-foreground">
-              Success Criteria ({config.evaluation.successCriteria.length}):
+              Success Criteria ({config.evaluation?.successCriteria?.length ?? 0}):
             </span>
             <ul className="mt-1 list-disc space-y-0.5 pl-4 text-muted line-clamp-2">
-              {config.evaluation.successCriteria.slice(0, 2).map((c, i) => (
+              {config.evaluation?.successCriteria?.slice(0, 2).map((c, i) => (
                 <li key={i}>{c}</li>
               ))}
             </ul>
@@ -84,7 +84,7 @@ export function ScenarioCard({
 
       <div className="mt-4 border-t pt-3">
         <div className="flex items-center justify-between text-xs text-muted">
-          <span>{config.evaluation.failureConditions.length} failure condition(s)</span>
+          <span>{config.evaluation?.failureConditions?.length ?? 0} failure condition(s)</span>
           <span title={scenario.updatedAt}>
             Updated {new Date(scenario.updatedAt).toLocaleDateString()}
           </span>

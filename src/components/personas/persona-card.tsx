@@ -26,8 +26,15 @@ export function PersonaCard({
   onArchive,
   onCreateScenario,
 }: PersonaCardProps) {
-  const { config } = persona;
-  const p = config.personality;
+  const config = persona.config || ({} as Partial<typeof persona.config>);
+  const p = config.personality || {
+    traits: [],
+    patienceLevel: 3,
+    assertivenessLevel: 3,
+    familiarityLevel: 2,
+  };
+  const language = config.language || { primary: "en", additional: [] };
+  const defaultObjective = config.defaultObjective || { intent: "" };
 
   return (
     <Card className="flex flex-col justify-between p-5 transition-shadow hover:shadow-md">
@@ -50,28 +57,28 @@ export function PersonaCard({
         {/* Traits & Metrics */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
           <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground">
-            Patience: {p.patienceLevel}/5
+            Patience: {p.patienceLevel ?? 3}/5
           </span>
           <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground">
-            Assertiveness: {p.assertivenessLevel}/5
+            Assertiveness: {p.assertivenessLevel ?? 3}/5
           </span>
           <span className="rounded bg-subtle px-2 py-0.5 font-medium text-foreground">
-            Familiarity: {p.familiarityLevel}/5
+            Familiarity: {p.familiarityLevel ?? 2}/5
           </span>
           <span className="rounded bg-subtle px-2 py-0.5 font-medium uppercase text-muted">
-            {config.language.primary}
+            {language.primary || "en"}
           </span>
-          {config.language.additional.length > 0 && (
+          {(language.additional || []).length > 0 && (
             <span className="rounded bg-subtle px-1.5 py-0.5 text-xs text-muted">
-              +{config.language.additional.join(", ")}
+              +{(language.additional || []).join(", ")}
             </span>
           )}
         </div>
 
         {/* Personality Traits Chips */}
-        {p.traits.length > 0 && (
+        {(p.traits || []).length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {p.traits.slice(0, 4).map((trait, i) => (
+            {(p.traits || []).slice(0, 4).map((trait, i) => (
               <span
                 key={i}
                 className="rounded-full border bg-surface px-2 py-0.5 text-xs text-muted"
@@ -79,18 +86,18 @@ export function PersonaCard({
                 {trait}
               </span>
             ))}
-            {p.traits.length > 4 && (
-              <span className="text-xs text-muted">+{p.traits.length - 4} more</span>
+            {(p.traits || []).length > 4 && (
+              <span className="text-xs text-muted">+{(p.traits || []).length - 4} more</span>
             )}
           </div>
         )}
 
         {/* Objective Preview */}
-        {config.defaultObjective.intent && (
+        {defaultObjective.intent && (
           <div className="rounded-md border bg-subtle/50 p-2.5 text-xs">
             <span className="font-medium text-foreground">Objective: </span>
             <span className="text-muted line-clamp-2">
-              {config.defaultObjective.intent}
+              {defaultObjective.intent}
             </span>
           </div>
         )}

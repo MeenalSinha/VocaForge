@@ -63,7 +63,7 @@ export function evaluateScenarioReadiness(
 
   // Check agent capability compatibility if an agent is attached
   if (targetAgentConfig) {
-    const requiredCaps = config.compatibility.requiredCapabilities || [];
+    const requiredCaps = config.compatibility?.requiredCapabilities || [];
     const agentCapMap = new Map(
       (targetAgentConfig.capabilities || []).map((c) => [c.name.toLowerCase(), c.status]),
     );
@@ -80,7 +80,7 @@ export function evaluateScenarioReadiness(
     }
 
     if (
-      config.compatibility.language &&
+      config.compatibility?.language &&
       targetAgentConfig.language &&
       config.compatibility.language !== targetAgentConfig.language.primary &&
       !targetAgentConfig.language.additional?.includes(config.compatibility.language)

@@ -61,7 +61,7 @@ export function OutcomeProofCard({ proof, className = "" }: OutcomeProofCardProp
   const { verdict, summary, contract, layers, fieldComparisons, reasons } = proof;
 
   return (
-    <div className={`rounded-xl border border-border bg-surface p-4 shadow-xs space-y-4 text-xs ${className}`}>
+    <div data-testid="outcome-proof-card" className={`rounded-xl border border-border bg-surface p-4 shadow-xs space-y-4 text-xs ${className}`}>
       {/* Top Header & Verdict */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-subtle pb-3">
         <div className="flex items-center gap-2">

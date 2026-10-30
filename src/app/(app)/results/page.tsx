@@ -109,7 +109,7 @@ export default function ResultsPage() {
         const list: ProjectOption[] = json.data?.items || (Array.isArray(json.data) ? json.data : []);
         setProjects(list);
         if (list[0]) {
-          setSelectedProjectId(list[0].id);
+          setSelectedProjectId((prev) => prev || list[0].id);
         }
       } catch (err: unknown) {
         setError((err as Error).message);
@@ -179,7 +179,7 @@ export default function ResultsPage() {
 
       if (runRes.ok) {
         const json = await runRes.json();
-        setSelectedRun(json.data?.run || null);
+        setSelectedRun(json.data?.run || json.data || null);
       }
 
       if (findingsRes.ok) {
