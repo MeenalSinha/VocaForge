@@ -1,0 +1,11 @@
+.git
+.github
+.next
+node_modules
+npm-debug.log
+yarn-error.log
+playwright-report
+test-results
+scratch
+.env*.local
+docs
