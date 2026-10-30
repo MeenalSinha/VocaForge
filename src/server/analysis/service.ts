@@ -435,15 +435,17 @@ export async function getRefinementDataForProject(
   findings: FailureFindingRecord[];
   proposals: FixProposalRecord[];
   comparisons: RetestComparisonRecord[];
+  unanalyzedRuns: repo.UnanalyzedRunItem[];
 }> {
   const pool = poolOf(ctx);
   const ownerId = ownerOf(ctx);
 
-  const [findings, proposals, comparisons] = await Promise.all([
+  const [findings, proposals, comparisons, unanalyzedRuns] = await Promise.all([
     repo.findFindingsByProjectId(pool, ownerId, projectId),
     repo.findFixProposalsByProjectId(pool, ownerId, projectId),
     repo.findComparisonsByProjectId(pool, ownerId, projectId),
+    repo.findUnanalyzedFailedRunsByProjectId(pool, ownerId, projectId),
   ]);
 
-  return { findings, proposals, comparisons };
+  return { findings, proposals, comparisons, unanalyzedRuns };
 }

@@ -372,13 +372,19 @@ export default function ResultsPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted">Unresolved Findings</p>
             <p
               className={`mt-1.5 text-2xl font-bold tracking-tight font-mono ${
-                metrics.unresolvedFindings > 0 ? "text-warning" : "text-success"
+                metrics.unresolvedFindings > 0
+                  ? "text-warning"
+                  : metrics.failedEvaluations > 0
+                    ? "text-amber-500"
+                    : "text-success"
               }`}
             >
               {metrics.unresolvedFindings}
             </p>
             <p className="mt-0.5 text-[11px] text-muted">
-              {metrics.totalFindings} total findings
+              {metrics.failedEvaluations > 0 && metrics.totalFindings === 0
+                ? `${metrics.failedEvaluations} failed pending analysis`
+                : `${metrics.totalFindings} total findings`}
             </p>
           </Card>
 
@@ -424,19 +430,49 @@ export default function ResultsPage() {
             </div>
             <span className="text-xs text-muted">
               {metrics.totalFindings === 0
-                ? "No failures detected"
+                ? metrics.failedEvaluations > 0
+                  ? `${metrics.failedEvaluations} failed runs pending diagnosis`
+                  : "No failures detected"
                 : `${metrics.totalFindings} findings identified`}
             </span>
           </div>
 
           <div className="mt-4">
             {metrics.totalFindings === 0 ? (
-              <div className="flex items-center gap-2 rounded-md bg-success-soft p-3 text-xs text-success border border-success/20">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
-                <span>
-                  No failure findings recorded. All simulation runs executed cleanly or have not identified discrepancies.
-                </span>
-              </div>
+              metrics.failedEvaluations > 0 ? (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-md bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
+                    <span>
+                      <strong>{metrics.failedEvaluations} simulation {metrics.failedEvaluations === 1 ? "run" : "runs"} failed evaluation</strong>. AI failure diagnosis is in progress or requires analysis to extract findings.
+                    </span>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={isAnalyzing}
+                    onClick={async () => {
+                      const failedRuns = executions.filter(
+                        (e) => (e.status === "failed_evaluation" || e.evaluationResult === "failed") && e.findingsCount === 0,
+                      );
+                      for (const r of failedRuns) {
+                        await handleAnalyzeRunDirect(r.id);
+                      }
+                    }}
+                    className="h-7 px-2.5 text-[11px] gap-1 shrink-0"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    {isAnalyzing ? "Analyzing..." : "Analyze All Failures"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 rounded-md bg-success-soft p-3 text-xs text-success border border-success/20">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
+                  <span>
+                    No failure findings recorded. All simulation runs executed cleanly or have not identified discrepancies.
+                  </span>
+                </div>
+              )
             ) : (
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {FAILURE_CATEGORIES.map((catKey) => {

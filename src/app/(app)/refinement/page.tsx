@@ -49,6 +49,16 @@ export default function RefinementPage() {
   const [findings, setFindings] = React.useState<FailureFindingRecord[]>([]);
   const [proposals, setProposals] = React.useState<FixProposalRecord[]>([]);
   const [comparisons, setComparisons] = React.useState<RetestComparisonRecord[]>([]);
+  const [unanalyzedRuns, setUnanalyzedRuns] = React.useState<Array<{
+    id: string;
+    scenarioName: string;
+    personaName: string;
+    targetAgentId: string;
+    status: string;
+    evaluationResult: string | null;
+    evaluationRationale: string | null;
+  }>>([]);
+  const [isAnalyzingAll, setIsAnalyzingAll] = React.useState<boolean>(false);
 
   const [loadingProjects, setLoadingProjects] = React.useState<boolean>(true);
   const [loadingData, setLoadingData] = React.useState<boolean>(false);
@@ -112,6 +122,7 @@ export default function RefinementPage() {
       setFindings(refJson.data?.findings || []);
       setProposals(refJson.data?.proposals || []);
       setComparisons(refJson.data?.comparisons || []);
+      setUnanalyzedRuns(refJson.data?.unanalyzedRuns || []);
     } catch (err: unknown) {
       setError((err as Error).message);
     } finally {
@@ -237,6 +248,26 @@ export default function RefinementPage() {
       toast.error((err as Error).message);
     } finally {
       setIsRetesting(false);
+    }
+  }
+
+  async function handleAnalyzeAllUnanalyzed() {
+    if (unanalyzedRuns.length === 0) return;
+    try {
+      setIsAnalyzingAll(true);
+      for (const run of unanalyzedRuns) {
+        const res = await fetch(`/api/simulations/runs/${run.id}/analyze`, { method: "POST" });
+        if (!res.ok) {
+          const json = await res.json().catch(() => ({}));
+          throw new Error(json.error?.message || `Failed to analyze run ${run.scenarioName}`);
+        }
+      }
+      toast.success("AI failure analysis completed for all failed runs.");
+      await refreshData();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsAnalyzingAll(false);
     }
   }
 
@@ -373,6 +404,27 @@ export default function RefinementPage() {
         </Card>
       </div>
 
+      {/* Unanalyzed Failed Runs Banner */}
+      {unanalyzedRuns.length > 0 && (
+        <div className="flex items-center justify-between rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-400">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
+            <span>
+              <strong>{unanalyzedRuns.length} failed simulation {unanalyzedRuns.length === 1 ? "run" : "runs"}</strong> detected that require AI failure analysis.
+            </span>
+          </div>
+          <Button
+            size="sm"
+            onClick={handleAnalyzeAllUnanalyzed}
+            disabled={isAnalyzingAll}
+            className="h-7 px-2.5 text-xs gap-1"
+          >
+            <Sparkles className="h-3 w-3" />
+            {isAnalyzingAll ? "Diagnosing..." : "Diagnose Failures with AI"}
+          </Button>
+        </div>
+      )}
+
       {/* Navigation Tabs */}
       <div className="flex border-b border-subtle">
         <button
@@ -425,20 +477,43 @@ export default function RefinementPage() {
       {activeTab === "findings" && (
         <div className="space-y-4">
           {filteredFindings.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center text-xs text-muted">
-              <CheckCircle2 className="h-8 w-8 text-emerald-500 mb-2" />
-              <p className="font-semibold text-foreground text-sm">No Active Failure Findings</p>
-              <p className="max-w-md mt-1 text-muted">
-                All tested simulations executed without policy violations or criteria discrepancies. Run new tests in Test Lab to explore additional scenarios.
-              </p>
-              <Link
-                href="/test-lab"
-                className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-accent/90"
-              >
-                <FlaskConical className="h-3.5 w-3.5" />
-                Go to Test Lab
-              </Link>
-            </div>
+            unanalyzedRuns.length > 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-amber-500/40 bg-amber-500/5 py-10 px-6 text-center text-xs">
+                <AlertTriangle className="h-8 w-8 text-amber-500 mb-2" />
+                <p className="font-semibold text-foreground text-sm">
+                  {unanalyzedRuns.length} Simulation {unanalyzedRuns.length === 1 ? "Run Failed" : "Runs Failed"} Evaluation
+                </p>
+                <p className="max-w-md mt-1 text-muted">
+                  Test evaluations failed in Test Lab, but AI failure analysis has not diagnosed the root causes yet. Run failure analysis to extract empirical findings and generate prompt fix proposals.
+                </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                  <Button
+                    onClick={handleAnalyzeAllUnanalyzed}
+                    disabled={isAnalyzingAll}
+                    size="sm"
+                    className="gap-1.5"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    {isAnalyzingAll ? "Analyzing Failures..." : "Analyze All Failed Runs with AI"}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center text-xs text-muted">
+                <CheckCircle2 className="h-8 w-8 text-emerald-500 mb-2" />
+                <p className="font-semibold text-foreground text-sm">No Active Failure Findings</p>
+                <p className="max-w-md mt-1 text-muted">
+                  All tested simulations executed without policy violations or criteria discrepancies. Run new tests in Test Lab to explore additional scenarios.
+                </p>
+                <Link
+                  href="/test-lab"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-accent/90"
+                >
+                  <FlaskConical className="h-3.5 w-3.5" />
+                  Go to Test Lab
+                </Link>
+              </div>
+            )
           ) : (
             <FailureFindingsCard
               findings={filteredFindings}

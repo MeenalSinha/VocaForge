@@ -243,6 +243,58 @@ export async function findFindingsByProjectId(
   return res.rows.map(toFinding);
 }
 
+export interface UnanalyzedRunItem {
+  id: string;
+  scenarioName: string;
+  personaName: string;
+  targetAgentId: string;
+  status: string;
+  evaluationResult: string | null;
+  evaluationRationale: string | null;
+  createdAt: string;
+}
+
+export async function findUnanalyzedFailedRunsByProjectId(
+  db: Db,
+  ownerId: string | null,
+  projectId: string,
+): Promise<UnanalyzedRunItem[]> {
+  const params: unknown[] = [projectId];
+  let ownerClause = "sr.owner_id IS NULL";
+  if (ownerId !== null) {
+    params.push(ownerId);
+    ownerClause = `sr.owner_id = $${params.length}`;
+  }
+  const res = await db.query<{
+    id: string;
+    scenario_name: string;
+    persona_name: string;
+    target_agent_id: string;
+    status: string;
+    evaluation_result: string | null;
+    evaluation_rationale: string | null;
+    created_at: Date;
+  }>(
+    `SELECT sr.id, sr.scenario_name, sr.persona_name, sr.target_agent_id, sr.status, sr.evaluation_result, sr.evaluation_rationale, sr.created_at
+     FROM simulation_runs sr
+     WHERE sr.project_id = $1 AND ${ownerClause}
+       AND (sr.status = 'failed_evaluation' OR sr.evaluation_result = 'failed')
+       AND NOT EXISTS (SELECT 1 FROM failure_findings ff WHERE ff.run_id = sr.id)
+     ORDER BY sr.created_at DESC`,
+    params,
+  );
+  return res.rows.map((r) => ({
+    id: r.id,
+    scenarioName: r.scenario_name,
+    personaName: r.persona_name,
+    targetAgentId: r.target_agent_id,
+    status: r.status,
+    evaluationResult: r.evaluation_result,
+    evaluationRationale: r.evaluation_rationale,
+    createdAt: r.created_at.toISOString(),
+  }));
+}
+
 export async function findFindingById(
   db: Db,
   ownerId: string | null,
